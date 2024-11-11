@@ -245,6 +245,27 @@ metro_cdmx = {
     'Tlahuac': ['Tlaltenco']
 }
 
+def encontrar_ruta(metro, inicio, destino):
+    # Cola para BFS
+    queue = deque([(inicio, [inicio])])  # Cada elemento es una tupla (estación actual, ruta tomada)
+    visitados = set()  # Para no visitar estaciones dos veces
+
+    while queue:
+        estacion_actual, ruta = queue.popleft()
+        # Si llegamos al destino, devolvemos la ruta
+        if estacion_actual == destino:
+            return ruta
+        # Marcar como visitado
+        visitados.add(estacion_actual)
+
+        # Añadir las conexiones no visitadas a la cola
+        for vecino in metro.get(estacion_actual, []):
+            if vecino not in visitados:
+                queue.append((vecino, ruta + [vecino]))
+
+    return None  # Si no se encuentra ruta
+
+
 @dataclass
 class Station:
     name: str
@@ -255,8 +276,8 @@ class Station:
 @dataclass
 class Route:
     stations: List[str]
-    total_time: int  # in minutes
-    transfers: List[Tuple[str, str, str]]  # (station, from_line, to_line)
+    total_time: int
+    transfers: List[Tuple[str, str, str]]
     line_sequence: List[str]
 
 class MetroSystem:
@@ -303,110 +324,23 @@ class MetroSystem:
 
     def get_station_lines(self, station_name: str) -> List[str]:
         """Get all lines that serve a station"""
-        station = self.stations.get(station_name.split(' L')[0])
+        base_name = station_name.split(' L')[0]
+        station = self.stations.get(base_name)
         return station.lines if station else []
 
     def get_connecting_line(self, station1: str, station2: str) -> str:
         """Determine which line connects two adjacent stations"""
-        station1_lines = set(self.get_station_lines(station1))
-        station2_lines = set(self.get_station_lines(station2))
+        station1_base = station1.split(' L')[0]
+        station2_base = station2.split(' L')[0]
+        
+        station1_lines = set(self.get_station_lines(station1_base))
+        station2_lines = set(self.get_station_lines(station2_base))
         common_lines = station1_lines.intersection(station2_lines)
-        return list(common_lines)[0] if common_lines else None
+        return list(common_lines)[0] if common_lines else 'L1'
 
-
-
-class MetroVisualizer:
-    def __init__(self, metro_system: MetroSystem):
-        self.metro_system = metro_system
-        self.G = nx.Graph()
-        self._build_graph()
-        self.pos = nx.spring_layout(self.G, k=1, iterations=50)
-
-    def _build_graph(self):
-        """Build NetworkX graph from metro system"""
-        # Add stations
-        for station_name, station in self.metro_system.stations.items():
-            self.G.add_node(station_name, 
-                          lines=station.lines,
-                          is_transfer=station.is_transfer)
-            
-            # Add connections
-            for connection in station.connections:
-                self.G.add_edge(station_name, connection)
-
-    def visualize_route(self, route: Route):
-        plt.figure(figsize=(15, 10))
-        
-        # Draw base network
-        nx.draw_networkx_edges(self.G, self.pos, 
-                             edge_color='lightgray',
-                             alpha=0.5)
-        
-        # Draw stations
-        nx.draw_networkx_nodes(self.G, self.pos,
-                             node_color='lightgray',
-                             alpha=0.5,
-                             node_size=100)
-        
-        # Highlight route
-        route_edges = list(zip(route.stations[:-1], route.stations[1:]))
-        for i, (start, end) in enumerate(route_edges):
-            color = self._get_line_color(route.line_sequence[i])
-            nx.draw_networkx_edges(self.G, self.pos,
-                                 edgelist=[(start, end)],
-                                 edge_color=color,
-                                 width=2)
-        
-        # Highlight transfers
-        transfer_stations = [t[0] for t in route.transfers]
-        if transfer_stations:
-            nx.draw_networkx_nodes(self.G, self.pos,
-                                 nodelist=transfer_stations,
-                                 node_color='red',
-                                 node_size=150)
-        
-        # Highlight start/end
-        nx.draw_networkx_nodes(self.G, self.pos,
-                             nodelist=[route.stations[0]],
-                             node_color='green',
-                             node_size=200)
-        nx.draw_networkx_nodes(self.G, self.pos,
-                             nodelist=[route.stations[-1]],
-                             node_color='blue',
-                             node_size=200)
-        
-        # Add labels for route stations
-        labels = {station: station for station in route.stations}
-        nx.draw_networkx_labels(self.G, self.pos, labels, font_size=8)
-        
-        plt.title(f"Route from {route.stations[0]} to {route.stations[-1]}\n"
-                 f"Total time: {route.total_time} minutes, "
-                 f"Transfers: {len(route.transfers)}")
-        plt.axis('off')
-        plt.show()
-
-    def _get_line_color(self, line: str) -> str:
-        """Return color for each metro line"""
-        color_map = {
-            'L1': '#FF1493',  # Rosa
-            'L2': '#0000FF',  # Azul
-            'L3': '#008000',  # Verde
-            'L4': '#87CEEB',  # Celeste
-            'L5': '#FFD700',  # Amarillo
-            'L6': '#FF0000',  # Rojo
-            'L7': '#FFA500',  # Naranja
-            'L8': '#90EE90',  # Verde claro
-            'L9': '#800080',  # Café
-            'LA': '#800080',  # Morado
-            'LB': '#808080',  # Gris
-            'L12': '#B8860B', # Dorado
-        }
-        return color_map.get(line, '#000000')
-    
 class MexicoCityMetroRouter:
     def __init__(self, metro_cdmx: dict):
         self.metro_system = MetroSystem(metro_cdmx)
-        self.visualizer = MetroVisualizer(self.metro_system)
         
     def find_route(self, start: str, end: str) -> Optional[Route]:
         """Find a route between two stations"""
@@ -414,18 +348,21 @@ class MexicoCityMetroRouter:
         if not path:
             return None
 
-        # Get line sequence
         line_sequence = []
         transfers = []
         current_line = None
 
         for i in range(len(path) - 1):
-            line = self.metro_system.get_connecting_line(path[i], path[i + 1])
-            if line:  # Only add line if it's valid
-                if line != current_line and current_line is not None:
-                    transfers.append((path[i], current_line, line))
-                current_line = line
-                line_sequence.append(line)
+            current_station = path[i]
+            next_station = path[i + 1]
+            
+            line = self.metro_system.get_connecting_line(current_station, next_station)
+            line_sequence.append(line)
+            
+            if current_line is not None and line != current_line:
+                transfers.append((current_station, current_line, line))
+            
+            current_line = line
 
         return Route(
             stations=path,
@@ -438,46 +375,85 @@ class MexicoCityMetroRouter:
         """Estimate travel time based on number of stations and transfers"""
         return len(path) * 3 + len(transfers) * 5  # 3 min per station, 5 min per transfer
 
-    def visualize_route(self, route: Route):
-        """Delegate visualization to the visualizer"""
-        self.visualizer.visualize_route(route)
+    def get_available_stations(self) -> List[str]:
+        """Get list of all available stations"""
+        return sorted(list(metro_cdmx.keys()))
 
 def encontrar_ruta(metro, inicio, destino):
-    # Cola para BFS
-    queue = deque([(inicio, [inicio])])  # Cada elemento es una tupla (estación actual, ruta tomada)
-    visitados = set()  # Para no visitar estaciones dos veces
+    queue = [(inicio, [inicio])]
+    visitados = set()
 
     while queue:
-        estacion_actual, ruta = queue.popleft()
-        # Si llegamos al destino, devolvemos la ruta
+        estacion_actual, ruta = queue.pop(0)
         if estacion_actual == destino:
             return ruta
-        # Marcar como visitado
         visitados.add(estacion_actual)
 
-        # Añadir las conexiones no visitadas a la cola
         for vecino in metro.get(estacion_actual, []):
             if vecino not in visitados:
                 queue.append((vecino, ruta + [vecino]))
 
-    return None  # Si no se encuentra ruta
+    return None
 
-# Example usage
-router = MexicoCityMetroRouter(metro_cdmx)
-
-# Test the router
-start_station = "Universidad"
-end_station = "Pantitlan L1"
-
-route = router.find_route(start_station, end_station)
-if route:
-    print(f"\nRoute found from {start_station} to {end_station}:")
-    print(f"Stations: {' -> '.join(route.stations)}")
-    print(f"Total time: {route.total_time} minutes")
-    print(f"Number of transfers: {len(route.transfers)}")
-    print("Transfers:", route.transfers)
+def print_stations_by_line():
+    """Print all stations organized by line"""
+    lines = defaultdict(list)
+    for station in metro_cdmx.keys():
+        if ' L' in station:
+            line = 'L' + station.split(' L')[1]
+            base_name = station.split(' L')[0]
+            lines[line].append(base_name)
     
-    # Visualize the route using the router's visualize_route method
-    router.visualize_route(route)
-else:
-    print(f"No route found between {start_station} and {end_station}")
+    print("\nEstaciones por línea:")
+    for line in sorted(lines.keys()):
+        print(f"\n{line}:")
+        for station in sorted(lines[line]):
+            print(f"  - {station}")
+
+def main():
+    router = MexicoCityMetroRouter(metro_cdmx)
+    
+    while True:
+        print("\n=== Sistema de Rutas del Metro CDMX ===")
+        print("1. Buscar ruta")
+        print("2. Ver estaciones por línea")
+        print("3. Salir")
+        
+        choice = input("\nSeleccione una opción (1-3): ")
+        
+        if choice == "1":
+            print("\nEstaciones disponibles:")
+            print_stations_by_line()
+            
+            print("\nIngrese la estación de origen (ejemplo: 'Universidad' o 'Pantitlan L1')")
+            start = input("Origen: ").strip()
+            
+            print("\nIngrese la estación de destino (ejemplo: 'Universidad' o 'Pantitlan L1')")
+            end = input("Destino: ").strip()
+            
+            route = router.find_route(start, end)
+            
+            if route:
+                print(f"\nRuta encontrada de {start} a {end}:")
+                print(f"Estaciones: {' -> '.join(route.stations)}")
+                print(f"Tiempo total estimado: {route.total_time} minutos")
+                print(f"Número de transbordos: {len(route.transfers)}")
+                if route.transfers:
+                    print("\nTransbordos:")
+                    for station, from_line, to_line in route.transfers:
+                        print(f"  - En {station}: cambiar de línea {from_line} a línea {to_line}")
+            else:
+                print(f"\nNo se encontró ruta entre {start} y {end}")
+                
+        elif choice == "2":
+            print_stations_by_line()
+            
+        elif choice == "3":
+            print("\n¡Gracias por usar el Sistema de Rutas del Metro CDMX!")
+            break
+            
+        else:
+            print("\nOpción no válida. Por favor, seleccione 1, 2 o 3.")
+
+if __name__ == "__main__":
+    main()
