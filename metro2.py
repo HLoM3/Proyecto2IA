@@ -414,79 +414,63 @@ def print_stations_by_line():
 # Definir las zonas y subzonas
 zonas = {
     "Zona1": {
-        "Subzona1": ["Ciudad_Azteca LB", "Plaza_Aragon LB", "Olimpica LB", "Ecatepec LB", "Muzquiz LB",
-                     "Rio_de_los_Remedios LB"],
-        "Subzona2": ["Impulsora LB", "Nezahualcoyotl LB", "Villa_de_Aragon LB", "Bosque_de_Aragon LB",
-                     "Deportivo_Oceania LB"]
+        "Subzona1": ["Ciudad_Azteca LB", "Plaza_Aragon LB", "Olimpica LB", "Ecatepec LB", "Muzquiz LB", "Rio_de_los_Remedios LB"],
+        "Subzona2": ["Impulsora LB", "Nezahualcoyotl LB", "Villa_de_Aragon LB", "Bosque_de_Aragon LB", "Deportivo_Oceania LB", "Oceania L5"]
     },
     "Zona2": {
-        "Subzona1": ["Martin_Carrera L6", "Martin_Carrera L4", "Talisman L4", "La_Villa L4"],
-        "Subzona2": ["Bondojito L4", "Consulado L5", "Consulado L4", "Valle_Gomez L5"],
-        "Subzona3": ["Misterios L5", "Tlaltelolco L3", "La_Raza L3", "La_Raza L5"],
-        "Subzona4": ["Politecnico L5", "Vallejo L6", "Instituto_del_Petroleo L6", "Instituto_del_Petroleo L5",
-                     "Autobuses_del_Norte L5"],
-        "Subzona5": ["Indios_Verdes L3", "Deportivo_18_de_Marzo L3", "Deportivo_18_de_Marzo L6", "Lindavista L6",
-                     "Potrero L3"]
+        "Subzona3": ["Martin_Carrera L6", "Martin_Carrera L4", "Talisman L4", "La_Villa L4"],
+        "Subzona4": ["Bondojito L4", "Consulado L5", "Consulado L4", "Valle_Gomez L5", "Canal_del_Norte L4"],
+        "Subzona5": ["Misterios L5", "Tlaltelolco L3", "La_Raza L3", "La_Raza L5", "Guerrero LB", "Guerrero L3"],
+        "Subzona6": ["Politecnico L5", "Vallejo L6", "Instituto_del_Petroleo L6", "Instituto_del_Petroleo L5", "Autobuses_del_Norte L5", "Norte_45 L6"],
+        "Subzona7": ["Indios_Verdes L3", "Deportivo_18_de_Marzo L3", "Deportivo_18_de_Marzo L6", "Lindavista L6", "Potrero L3"]
     },
     "Zona3": {
-        "Subzona1": ["Oceania L5", "Oceania LB", "Eduardo_Molina L5", "Aragon L5", "Romero_Rubio LB",
-                     "Ricardo_Flores_Magon LB"],
-        "Subzona2": ["Canal_del_Norte L4", "Morelos L4", "Morelos LB", "Tepito LB", "Merced L1", "Candelaria L1",
-                     "Candelaria L4", "San_Lazaro LB", "San_Lazaro L1"],
-        "Subzona3": ["Moctezuma L1", "Balbuena L1", "Boulevard_Puerto_Aereo L1", "Terminal_Aerea L5", "Velodromo L9"],
-        "Subzona4": ["La_Viga L8", "Jamaica L9", "Jamaica L4", "Mixiuhca L9", "Velodromo L9", "Santa_Anita L8",
-                     "Santa_Anita L4"],
-        "Subzona5": ["Pantitlan L5", "Pantitlan L9", "Pantitlan L1", "Pantitlan LA", "Puebla L9", "Ciudad_deportiva L9",
-                     "Zaragoza L1", "Hangares L5", "Gomez_Farias L1"]
+        "Subzona8": ["Oceania L5", "Oceania LB", "Eduardo_Molina L5", "Aragon L5", "Romero_Rubio LB", "Ricardo_Flores_Magon LB", "Aragon L5", "Deportivo_Oceania LB"],
+        "Subzona9": ["Canal_del_Norte L4", "Morelos L4", "Morelos LB", "Tepito LB", "Merced L1", "Candelaria L1", "Candelaria L4", "San_Lazaro LB", "San_Lazaro L1", "Pino_Suarez L2"],
+        "Subzona10": ["Moctezuma L1", "Balbuena L1", "Boulevard_Puerto_Aereo L1", "Terminal_Aerea L5", "Velodromo L9"],
+        "Subzona11": ["La_Viga L8", "Jamaica L9", "Jamaica L4", "Mixiuhca L9", "Velodromo L9", "Santa_Anita L8", "Santa_Anita L4", "Chabacano L2", "Chabacano L9"],
+        "Subzona12": ["Pantitlan L5", "Pantitlan L9", "Pantitlan L1", "Pantitlan LA", "Puebla L9", "Ciudad_deportiva L9", "Zaragoza L1", "Hangares L5", "Gomez_Farias L1", "Agricola_Oriental LA"]
     },
     "Zona4": {
-        "Subzona1": ["Agricola_Oriental LA", "Canal_de_San_Juan LA", "Tepalcates LA", "Guelatao LA"],
-        "Subzona2": ["Penon_Viejo LA", "Acatitla LA", "Santa_Marta LA", "Los_Reyes LA", "La_Paz LA"]
+        "Subzona13": ["Agricola_Oriental LA", "Canal_de_San_Juan LA", "Tepalcates LA", "Guelatao LA", "Pantitlan L1", "Pantitlan L5", "Pantitlan L9", "Pantitlan LA"],
+        "Subzona14": ["Penon_Viejo LA", "Acatitla LA", "Santa_Marta LA", "Los_Reyes LA", "La_Paz LA"]
     },
     "Zona5": {
-        "Subzona1": ["Coyuya L8", "Iztacalco L8", "Apatlalco L8"],
-        "Subzona2": ["Aculco L8", "Escuadron_201 L8", "Atlalilco L12", "Atlalilco L8", "Iztapalapa L8",
-                     "Mexicaltzingo L12"],
-        "Subzona3": ["Cerro_de_la_Estrella L8", "UAM-1 L8", "Constitucion_de_1917 L8"],
-        "Subzona4": ["Culhuacan L12", "San_Andres_Tomatlan L12", "Lomas_Estrella L12", "Calle_11 L12"],
-        "Subzona5": ["Periferico_Oriente L12", "Tezonco L12", "Olivos L12", "Nopalera L12", "Zapotitlan L12",
-                     "Tlaltenco L12", "Tlahuac L12"]
+        "Subzona15": ["Coyuya L8", "Iztacalco L8", "Apatlalco L8", "Santa_Anita L4", "Santa_Anita L8"],
+        "Subzona16": ["Aculco L8", "Escuadron_201 L8", "Atlalilco L12", "Atlalilco L8", "Iztapalapa L8", "Mexicaltzingo L12", "Ermita L2", "Ermita L12"],
+        "Subzona17": ["Cerro_de_la_Estrella L8", "UAM-1 L8", "Constitucion_de_1917 L8"],
+        "Subzona18": ["Culhuacan L12", "San_Andres_Tomatlan L12", "Lomas_Estrella L12", "Calle_11 L12"],
+        "Subzona19": ["Periferico_Oriente L12", "Tezonco L12", "Olivos L12", "Nopalera L12", "Zapotitlan L12", "Tlaltenco L12", "Tlahuac L12"]
     },
     "Zona6": {
-        "Subzona1": ["Division_del_Norte L3", "Zapata L3", "Zapata L12", "Parque_de_los_Venados L12",
-                     "Eje_Central L12"],
-        "Subzona2": ["Mixcoac L12", "Mixcoac L7", "Barranca_del_Muerto L7", "Hospital_20_de_Noviembre L12",
-                     "Insurgentes_Sur L12", "Coyoacan L3"],
-        "Subzona3": ["Universidad L3", "Copilco L3", "Miguel_Angel_de_Quevedo L3", "Viveros L3"],
-        "Subzona4": ["Nativitas L2", "Portales L2", "Ermita L12", "Ermita L2", "General_Anaya L2", "Tasquena L2"]
+        "Subzona20": ["Division_del_Norte L3", "Zapata L3", "Zapata L12", "Parque_de_los_Venados L12", "Eje_Central L12", "Eugenia L3"],
+        "Subzona21": ["Mixcoac L12", "Mixcoac L7", "Barranca_del_Muerto L7", "Hospital_20_de_Noviembre L12", "Insurgentes_Sur L12", "Coyoacan L3", "San_Antonio L7"],
+        "Subzona22": ["Universidad L3", "Copilco L3", "Miguel_Angel_de_Quevedo L3", "Viveros L3"],
+        "Subzona23": ["Nativitas L2", "Portales L2", "Ermita L12", "Ermita L2", "General_Anaya L2", "Tasquena L2", "Mexicaltzingo L12", "Villa_de_Cortes L2"]
     },
 
+    "Zona7": {
+        "Subzona24": ["Observatorio L1", "San_Antonio L1", "San_Pedro_de_los_Pinos L7", "Tacubaya L1", "Tacubaya L7", "Tacubaya L9", "Mixcoac L7", "Mixcoac L12"],
+        "Subzona25": ["Patriotismo L9", "Chilpancingo L9", "Juancatlan L1", "Chapultepec L1", "Sevilla L1", "Insurgentes L1", "Cuauhtemoc L1", "Chilpancingo L9", "Centro_Medico L3", "Centro_Medico L9"],
+        "Subzona26": ["San_Joaquin L7", "Polanco L7", "Auditorio L7", "Constituyentes L7", "Tacuba L7", "Tacuba L2"]
+    },
+
+    "Zona8": {
+        "Subzona27": ["San_Cosme L2", "Normal L2", "Colegio_Militar L2", "Cuitlahuac L2", "Normal L2"],
+        "Subzona28": ["Tacuba L2", "Tacuba L7", "Panteones L2", "Cuatro_Caminos L2", "Refineria L7", "San_Joaquin L7"],
+        "Subzona29": ["Camarones L7", "El_Rosario L7", "Aquiles_Serdan L7", "El_Rosario L6", "Tezozomoc L6"],
+        "Subzona30": ["Azcapotzalco L6", "Ferreria L6", "Norte_45 L6", "Vallejo L6"]
+    },
+    "Zona9": {
+        "Subzona31": ["Eugenia L3", "Etiopia L3", "Viaducto L2", "Xola L2", "Villa_de_Cortes L2", "Nativitas L2", "Division_del_Norte L3"],
+        "Subzona32": ["Centro_Medico L3", "Centro_Medico L9", "Lazaro_Cardenas L9", "Chabacano L2", "Chabacano L8", "Chabacano L8", "La_Viga L1"],
+        "Subzona33": ["Hospital_General L3", "Obrera L8", "San_Antonio_Abdad L2", "Ninos_heroes L3", "Doctores L8"],
+        "Subzona34": ["Cuathemoc L1", "Balderas L1", "Balderas L3", "Salto_del_Agua L2", "Salto_del_Agua L8", "Isabel_la_Catolica L1", "Pino_Suarez L1", "Pino_Suarez L2", "Merced L1"],
+        "Subzona35": ["San_Juan_de_Letran L8", "Juarez L3", "Zocalo L2", "Allende L2", "Bellas_Artes L2", "Bellas_Artes L3"],
+        "Subzona36": ["Hidalgo L2", "Hidalgo L3", "Revolucion L2", "San_Cosme L2", "Normal L2"],
+        "Subzona37": ["Buenavista LB", "Guerrero L3", "Guerrero LB", "Garibaldi L8", "Garibaldi LB", "Lagunilla LB", "Tepito LB", "Tlaltelolco L3"]
+    }
 }
-
-
-# Función para encontrar la zona y subzona de una estación
-def encontrar_zona_subzona(estacion):
-    for zona, subzonas in zonas.items():
-        for subzona, estaciones in subzonas.items():
-            if estacion in estaciones:
-                return zona, subzona
-    return None, None
-
-# Búsqueda de la ruta entre estaciones
-def encontrar_ruta(estacion_inicio, estacion_destino):
-    zona_inicio, subzona_inicio = encontrar_zona_subzona(estacion_inicio)
-    zona_destino, subzona_destino = encontrar_zona_subzona(estacion_destino)
-
-    if zona_inicio == zona_destino:
-        if subzona_inicio == subzona_destino:
-            # Ruta dentro de la misma subzona
-            return busqueda_interzonal(estacion_inicio, estacion_destino)
-        else:
-            # Ruta dentro de la misma zona pero diferentes subzonas
-            return busqueda_entre_subzonas(estacion_inicio, estacion_destino, zona_inicio)
-    else:
-        # Ruta entre diferentes zonas
-        return busqueda_entre_zonas(estacion_inicio, estacion_destino)
 
 # Implementación de búsquedas específicas (dentro de una subzona, entre subzonas y entre zonas)
 def busqueda_interzonal(estacion_inicio, estacion_destino):
@@ -543,35 +527,73 @@ def busqueda_entre_subzonas(estacion_inicio, estacion_destino, zona):
     return None  # Si no hay ruta
 
 
-def busqueda_entre_zonas(estacion_inicio, estacion_destino):
-    # Encuentra la zona y subzona de inicio y destino
-    zona_inicio, subzona_inicio = encontrar_zona_subzona(estacion_inicio)
-    zona_destino, subzona_destino = encontrar_zona_subzona(estacion_destino)
+def encontrar_subzona(zonas, estacion):
+    for zona, subzonas in zonas.items():
+        for subzona, estaciones in subzonas.items():
+            if estacion in estaciones:
+                return zona, subzona
+    return None, None
 
-    # Si están en la misma zona, utiliza `busqueda_entre_subzonas`
-    if zona_inicio == zona_destino:
-        return busqueda_entre_subzonas(estacion_inicio, estacion_destino, zona_inicio)
-    else:
-        # Diferentes zonas: intenta conectar a través de transbordos
-        # Primero busca ruta en zona de inicio hacia una estación de transbordo a la otra zona
-        ruta_inicio = []
-        for estacion_intermedia in zonas[zona_inicio][subzona_inicio]:
-            ruta_inicio = busqueda_interzonal(estacion_inicio, estacion_intermedia)
-            if ruta_inicio:
+
+def bfs_encontrar_ruta(metro, inicio, destino):
+    visitados = set()
+    cola = [(inicio, [inicio])]
+
+    while cola:
+        nodo_actual, ruta = cola.pop(0)
+
+        if nodo_actual == destino:
+            return ruta
+
+        for vecino in metro.get(nodo_actual, []):
+            if vecino not in visitados:
+                visitados.add(vecino)
+                cola.append((vecino, ruta + [vecino]))
+
+    return None
+
+
+def encontrar_ruta(zonas, metro, inicio, destino):
+    zona_inicio, subzona_inicio = encontrar_subzona(zonas, inicio)
+    zona_destino, subzona_destino = encontrar_subzona(zonas, destino)
+
+    if zona_inicio is None or zona_destino is None:
+        print("Una de las estaciones no existe en las zonas.")
+        return None
+
+    # Si están en la misma subzona, realiza una búsqueda directa.
+    if zona_inicio == zona_destino and subzona_inicio == subzona_destino:
+        return bfs_encontrar_ruta(metro, inicio, destino)
+
+    # Si están en zonas o subzonas diferentes, busca transbordos.
+    ruta = []
+
+    # Busca estaciones de transbordo en la subzona de inicio.
+    for estacion in zonas[zona_inicio][subzona_inicio]:
+        if "L" in estacion and estacion in metro:  # Transbordo probable
+            ruta_parcial = bfs_encontrar_ruta(metro, inicio, estacion)
+            if ruta_parcial:
+                ruta.extend(ruta_parcial)
                 break
 
-        # Luego, busca ruta en la zona de destino desde una estación de transbordo
-        ruta_destino = []
-        for estacion_intermedia in zonas[zona_destino][subzona_destino]:
-            ruta_destino = busqueda_interzonal(estacion_intermedia, estacion_destino)
-            if ruta_destino:
+    # Agrega la estación de transbordo final en la subzona de destino.
+    for estacion in zonas[zona_destino][subzona_destino]:
+        if "L" in estacion and estacion in metro:  # Transbordo probable
+            ruta_parcial = bfs_encontrar_ruta(metro, ruta[-1], estacion)
+            if ruta_parcial:
+                ruta.extend(ruta_parcial[1:])
                 break
 
-        if ruta_inicio and ruta_destino:
-            # Concatena la ruta de inicio y la ruta de destino
-            return ruta_inicio + ruta_destino[1:]
+    # Finalmente, conecta con la estación de destino.
+    ruta_final = bfs_encontrar_ruta(metro, ruta[-1], destino)
+    if ruta_final:
+        ruta.extend(ruta_final[1:])
 
-    return None  # Si no hay ruta
+    return ruta
+
+
+# Ejemplo de uso:
+print(encontrar_ruta(zonas, metro_cdmx, "Eugenia L3", "Centro_Medico L9"))
 
 
 def main():
