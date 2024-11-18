@@ -11,238 +11,238 @@ from collections import defaultdict, deque
 # Metro network data for Mexico City
 
 metro_cdmx = {
-    # Línea 1 (Observatorio - Pantitlán)
+    # Línea 1 (Observatorio L1 - Pantitlán)
     #Transbordo
-    'Pantitlan L1': ['Zaragoza', 'Pantitlan L5', 'Pantitlan L9', 'Pantitlan LA'],
-    'Zaragoza': ['Pantitlan L1', 'Gomez Farias'],
-    'Gomez Farias': ['Zaragoza', 'Boulevard Puerto Aereo'],
-    'Boulevard Puerto Aereo': ['Gomez Farias', 'Balbuena'],
-    'Balbuena': ['Boulevard Puerto Aereo', 'Moctezuma'],
-    'Moctezuma': ['Balbuena', 'San Lazaro L1'],
+    'Pantitlan L1': ['Zaragoza L1', 'Pantitlan L5', 'Pantitlan L9', 'Pantitlan LA'],
+    'Zaragoza L1': ['Pantitlan L1', 'Gomez_Farias L1'],
+    'Gomez_Farias L1': ['Zaragoza L1', 'Boulevard_Puerto_Aereo L1'],
+    'Boulevard_Puerto_Aereo L1': ['Gomez_Farias L1', 'Balbuena L1'],
+    'Balbuena L1': ['Boulevard_Puerto_Aereo L1', 'Moctezuma L1'],
+    'Moctezuma L1': ['Balbuena L1', 'San_Lazaro L1'],
     #Transbordo
-    'San Lazaro L1': ['Moctezuma', 'Candelaria L1', 'San Lazaro LB'],
+    'San_Lazaro L1': ['Moctezuma L1', 'Candelaria L1', 'San Lazaro LB'],
     #Transbordo
-    'Candelaria L1': ['San Lazaro L1', 'Merced', 'Candelaria L4'],
-    'Merced': ['Candelaria L1', 'Pino Suarez L1'],
-    'Pino Suarez L1': ['Merced', 'Isabel la Catolica', 'Pino Suarez L2'],
-    'Isabel la Catolica': ['Pino Suarez L1', 'Salto del Agua L1'],
+    'Candelaria L1': ['San_Lazaro L1', 'Merced L1', 'Candelaria L4'],
+    'Merced L1': ['Candelaria L1', 'Pino_Suarez L1'],
+    'Pino_Suarez L1': ['Merced L1', 'Isabel_la_Catolica L1', 'Pino Suarez L2'],
+    'Isabel_la_Catolica L1': ['Pino_Suarez L1', 'Salto_del_Agua L1'],
     #Transbordo
-    'Salto del Agua L1': ['Isabel la Catolica', 'Balderas L1','Salto del Agua L8'],
+    'Salto_del_Agua L1': ['Isabel_la_Catolica L1', 'Balderas L1','Salto_del_Agua L8'],
     #Transbordo
-    'Balderas L1': ['Salto del Agua L1', 'Cuauhtemoc','Balderas L3'],
-    'Cuauhtemoc': ['Balderas L1', 'Insurgentes'],
-    'Insurgentes': ['Cuauhtemoc', 'Sevilla'],
-    'Sevilla': ['Insurgentes', 'Chapultepec'],
-    'Chapultepec': ['Sevilla', 'Juanacatlan'],
-    'Juanacatlan': ['Chapultepec', 'Tacubaya L1'],
-    'Tacubaya L1': ['Juanacatlan', 'Observatorio', 'Tacubaya L7', 'Tacubaya L9'],
-    'Observatorio': ['Tacubaya L1'],
+    'Balderas L1': ['Salto_del_Agua L1', 'Cuauhtemoc L1','Balderas L3'],
+    'Cuauhtemoc L1': ['Balderas L1', 'Insurgentes L1'],
+    'Insurgentes L1': ['Cuauhtemoc L1', 'Sevilla L1'],
+    'Sevilla L1': ['Insurgentes L1', 'Chapultepec L1'],
+    'Chapultepec L1': ['Sevilla L1', 'Juanacatlan L1'],
+    'Juanacatlan L1': ['Chapultepec L1', 'Tacubaya L1'],
+    'Tacubaya L1': ['Juanacatlan L1', 'Observatorio L1', 'Tacubaya L7', 'Tacubaya L9'],
+    'Observatorio L1': ['Tacubaya L1'],
 
-    # Línea 2 (Cuatro Caminos - Tasqueña)
-    'Cuatro Caminos': ['Panteones'],
-    'Panteones': ['Cuatro Caminos', 'Tacuba L2'],
+    # Línea 2 (Cuatro_Caminos L1 - Tasqueña)
+    'Cuatro_Caminos L2': ['Panteones L2'],
+    'Panteones L2': ['Cuatro_Caminos L2', 'Tacuba L2'],
     #Transborde
-    'Tacuba L2': ['Panteones', 'Cuitlahuac','Tacuba L7'],
-    'Cuitlahuac': ['Tacuba L2', 'Popotla'],
-    'Popotla': ['Cuitlahuac', 'Colegio Militar'],
-    'Colegio Militar': ['Popotla', 'Normal'],
-    'Normal': ['Colegio Militar', 'San Cosme'],
-    'San Cosme': ['Normal', 'Revolucion'],
-    'Revolucion': ['San Cosme', 'Hidalgo L2'],
+    'Tacuba L2': ['Panteones L2', 'Cuitlahuac L2','Tacuba L7'],
+    'Cuitlahuac L2': ['Tacuba L2', 'Popotla L2'],
+    'Popotla L2': ['Cuitlahuac L2', 'Colegio_Militar L2'],
+    'Colegio_Militar L2': ['Popotla L2', 'Normal L2'],
+    'Normal L2': ['Colegio_Militar L2', 'San_Cosme L2'],
+    'San_Cosme L2': ['Normal L2', 'Revolucion L2'],
+    'Revolucion L2': ['San_Cosme L2', 'Hidalgo L2'],
     #Transborde
-    'Hidalgo L2': ['Revolucion', 'Bellas Artes L2', 'Hidalgo L3'],
+    'Hidalgo L2': ['Revolucion L2', 'Bellas_Artes L2', 'Hidalgo L3'],
     #Transborde
-    'Bellas Artes L2': ['Hidalgo L2', 'Allende','Bellas Artes L8'],
-    'Allende': ['Bellas Artes L2', 'Zocalo'],
-    'Zocalo': ['Allende', 'Pino Suarez L2'],
+    'Bellas_Artes L2': ['Hidalgo L2', 'Allende L2','Bellas Artes L8'],
+    'Allende L2': ['Bellas_Artes L2', 'Zocalo L2'],
+    'Zocalo L2': ['Allende L2', 'Pino_Suarez L2'],
     #Transborde
-    'Pino Suarez L2': ['Zocalo', 'San Antonio Abad', 'Pino Suarez L1'],
-    'San Antonio Abad': ['Pino Suarez L2', 'Chabacano L2'],
+    'Pino_Suarez L2': ['Zocalo L2', 'San_Antonio_Abad L2', 'Pino_Suarez L1'],
+    'San_Antonio_Abad L2': ['Pino_Suarez L2', 'Chabacano L2'],
     #Transborde
-    'Chabacano L2': ['San Antonio Abad', 'Viaducto', 'Chabacano L8', 'Chabacano L9'],
-    'Viaducto': ['Chabacano L2', 'Xola'],
-    'Xola': ['Viaducto', 'Villa de Cortes'],
-    'Villa de Cortes': ['Xola', 'Nativitas'],
-    'Nativitas': ['Portales', 'Villa de Cortés'],
-    'Portales': ['Ermita L2', 'Nativitas'],
+    'Chabacano L2': ['San_Antonio_Abad L2', 'Viaducto L2', 'Chabacano L8', 'Chabacano L9'],
+    'Viaducto L2': ['Chabacano L2', 'Xola L2'],
+    'Xola L2': ['Viaducto L2', 'Villa_de_Cortes L2'],
+    'Villa_de_Cortes L2': ['Xola L2', 'Nativitas L2'],
+    'Nativitas L2': ['Portales L2', 'Villa_de_Cortes L2'],
+    'Portales L2': ['Ermita L2', 'Nativitas L2'],
     #Transborde
-    'Ermita L2': ['General Anaya', 'Portales', 'Ermita L12'],
-    'General Anaya': ['Ermita L2', 'Tasquena'],
-    'Tasquena': ['General Anaya'],
+    'Ermita L2': ['General_Anaya L2', 'Portales L2', 'Ermita L12'],
+    'General_Anaya L2': ['Ermita L2', 'Tasquena L2'],
+    'Tasquena L2': ['General_Anaya L2'],
 
-    #Linea 3 (Indios Verdes - Universidad)
-    'Indios Verdes': ['Deportivo 18 de Marzo'],
+    #Linea 3 (Indios Verdes L3 - Universidad)
+    'Indios Verdes L3': ['Deportivo_18_de_Marzo'],
     #Transborde
-    'Deportivo 18 de Marzo L3': ['Indios Verdes', 'Potrero', 'Deportivo 18 de Marzo L6'],
-    'Potrero': ['Deportivo 18 de Marzo L3','La Raza L3'],
+    'Deportivo_18_de_Marzo L3': ['Indios Verdes L3', 'Potrero L3', 'Deportivo_18_de_Marzo L6'],
+    'Potrero L3': ['Deportivo_18_de_Marzo L3','La_Raza L3'],
     #Transborde
-    'La Raza L3': ['Potrero', 'Tlaltelolco', 'La Raza L5'],
-    'Tlaltelolco': ['La Raza L3', 'Guerrero L3'],
+    'La_Raza L3': ['Potrero L3', 'Tlaltelolco L3', 'La_Raza L5'],
+    'Tlaltelolco L3': ['La_Raza L3', 'Guerrero L3'],
     #Transborde
-    'Guerrero L3': ['Tlaltelolco', 'Hidalgo L3', 'Buenavista', 'Garibaldi'],
-    'Hidalgo L3': ['Guerrero L3', 'Juarez', 'Hidalgo L2'],
-    'Juarez': ['Hidalgo L3', 'Balderas L3'],
-    'Balderas L3': ['Juarez', 'Ninos heroes', 'Balderas L1'],
-    'Ninos heroes':['Balderas L3', 'Hospital General'],
-    'Hospital General': ['Ninos heroes','Centro Medico L3'],
+    'Guerrero L3': ['Tlaltelolco L3', 'Hidalgo L3', 'Buenavista LB', 'Garibaldi'],
+    'Hidalgo L3': ['Guerrero L3', 'Juarez L3', 'Hidalgo L2'],
+    'Juarez L3': ['Hidalgo L3', 'Balderas L3'],
+    'Balderas L3': ['Juarez L3', 'Ninos_heroes L3', 'Balderas L1'],
+    'Ninos_heroes L3':['Balderas L3', 'Hospital_General L3'],
+    'Hospital_General L3': ['Ninos_heroes L3','Centro_Medico L3'],
     #Transborde
-    'Centro Medico L3': ['Hospital General', 'Etiopia', 'Centro Medico L9'],
-    'Etiopia': ['Centro Medico L3','Eugenia'],
-    'Eugenia': ['Etiopia', 'Division del Norte'],
-    'Division del Norte': ['Eugenia', 'Zapata L3'],
-    'Zapata L3': ['Division del Norte', 'Coyoacan', 'Zapata L12'],
-    'Coyoacan': ['Zapata L3', 'Viveros'],
-    'Viveros': ['Coyoacan', 'Miguel Angel de Quevedo'],
-    'Miguel Angel de Quevedo': ['Viveros','Copilco'],
-    'Copilco': ['Miguel Angel de Quevedo', 'Universidad'],
-    'Universidad': ['Copilco'],
+    'Centro_Medico L3': ['Hospital_General L3', 'Etiopia L3', 'Centro_Medico L9'],
+    'Etiopia L3': ['Centro_Medico L3','Eugenia L3'],
+    'Eugenia L3': ['Etiopia L3', 'Division_del_Norte L3'],
+    'Division_del_Norte L3': ['Eugenia L3', 'Zapata L3'],
+    'Zapata L3': ['Division_del_Norte L3', 'Coyoacan L3', 'Zapata L12'],
+    'Coyoacan L3': ['Zapata L3', 'Viveros L3'],
+    'Viveros L3': ['Coyoacan L3', 'Miguel_Angel_de_Quevedo'],
+    'Miguel_Angel_de_Quevedo': ['Viveros L3','Copilco L3'],
+    'Copilco L3': ['Miguel_Angel_de_Quevedo', 'Universidad L3'],
+    'Universidad L3': ['Copilco L3'],
 
     #Linea 4
-    'Martin Carrera L4': ['Talisman', 'Marin Carrera L6'],
-    'Talisman': ['Martin Carrera L4', 'Bondojito'],
-    'Bondojito': ['Talisman', 'Consulado L4'],
-    'Consulado L4': ['Bondojito', 'Canal del Norte', 'Consulado L5'],
-    'Canal del Norte': ['Consulado L4', 'Morelos L4'],
-    'Morelos L4': ['Canal del Norte', 'Candelaria', 'Tepito', ''],
-    'Candelaria': ['Morelos L4', 'Fray Servando', 'Merced', 'San Lazaro L1', 'San Lazaro LB'],
-    'Fray Servando': ['Candelaria', 'Jamaica L4'],
-    'Jamaica L4': ['Fray Servando', 'Santa Anita', 'Jamaica L9'],
-    'Santa Anita L4': ['Jamaica L4', 'Santa Anita L8'],
+    'Martin_Carrera L4': ['Talisman L4', 'Marin_Carrera L6'],
+    'Talisman L4': ['Martin_Carrera L4', 'Bondojito L4'],
+    'Bondojito L4': ['Talisman L4', 'Consulado L4'],
+    'Consulado L4': ['Bondojito L4', 'Canal_del_Norte L4', 'Consulado L5'],
+    'Canal_del_Norte L4': ['Consulado L4', 'Morelos L4'],
+    'Morelos L4': ['Canal_del_Norte L4', 'Candelaria L4', 'Tepito LB', ''],
+    'Candelaria L4': ['Morelos L4', 'Fray_Servando L4', 'Candelaria L1'],
+    'Fray_Servando L4': ['Candelaria L4', 'Jamaica L4'],
+    'Jamaica L4': ['Fray_Servando L4', 'Santa_Anita', 'Jamaica L9'],
+    'Santa_Anita L4': ['Jamaica L4', 'Santa_Anita L8'],
 
     #Linea 5
-    'Pantitlan L5': ['Hangares', 'Pantitlan L1', 'Pantitlan L9', 'Pantitlan LA'],
-    'Hangares': ['Pantitlan L5', 'Terminal Aerea'],
-    'Terminal Aerea': ['Hangares', 'Oceania L5'],
-    'Oceania L5': ['Terminal Aerea', 'Aragon'],
-    'Aragon': ['Oceania L5', 'Eduardo Molina'],
-    'Eduardo Molina': ['Aragon', 'Consulado L5'],
-    'Consulado L5': ['Eduardo Molina', 'Valle Gomez', 'Consulado L4'],
-    'Valle Gomez': ['Consulado L5', 'Misterios'],
-    'Misterios': ['Valle Gomez', 'La Raza L5'],
-    'La Raza L5': ['Misterios', 'Autobuses del Norte'],
-    'Autobuses del Norte': ['La Raza L5', 'Instituto del Petroleo L5'],
-    'Instituto del Petroleo L5': ['Autobuses del Norte', 'Politecnico', 'Instituto del Petroleo L6'],
-    'Politecnico': ['Instituto del Petroleo L5'],
+    'Pantitlan L5': ['Hangares L5', 'Pantitlan L1', 'Pantitlan L9', 'Pantitlan LA'],
+    'Hangares L5': ['Pantitlan L5', 'Terminal_Aerea L5'],
+    'Terminal_Aerea L5': ['Hangares L5', 'Oceania L5'],
+    'Oceania L5': ['Terminal_Aerea L5', 'Aragon L5'],
+    'Aragon L5': ['Oceania L5', 'Eduardo_Molina L5'],
+    'Eduardo_Molina L5': ['Aragon L5', 'Consulado L5'],
+    'Consulado L5': ['Eduardo_Molina L5', 'Valle_Gomez L5', 'Consulado L4'],
+    'Valle_Gomez L5': ['Consulado L5', 'Misterios'],
+    'Misterios': ['Valle_Gomez L5', 'La Raza L5'],
+    'La Raza L5': ['Misterios', 'Autobuses_del_Norte L5'],
+    'Autobuses_del_Norte L5': ['La Raza L5', 'Instituto_del_Petroleo L5'],
+    'Instituto_del_Petroleo L5': ['Autobuses_del_Norte L5', 'Politecnico L5', 'Instituto_del_Petroleo L6'],
+    'Politecnico L5': ['Instituto del Petroleo L5'],
 
     #Linea 6
-    'El Rosario L6': ['Tezozomoc', 'Aquiles Serdan', 'El Rosario L7'],
-    'Tezozomoc': ['El Rosario L6', 'UAM Azcapotzalco'],
-    'UAM Azcapotzalco': ['Tezozómoc', 'Ferreria'],
-    'Ferreria': ['UAM Azcapotzalco', 'Norte 45'],
-    'Norte 45': ['Ferreria', 'Vallejo'],
-    'Vallejo': ['Norte 45', 'Instituto del Petroleo L6'],
-    'Instituto del Petroleo L6': ['Vallejo', 'Lindavista'],
-    'Lindavista': ['Instituto del Petroleo L6', 'Deportivo 18 de Marzo L6'],
-    'Deportivo 18 de Marzo L6': ['Lindavista', 'La Villa', 'Deportivo 18 de Marzo L3'],
-    'La Villa': ['Martin Carrera L6', 'Deportivo 18 de Marzo L6'],
-    'Martin Carrera L6': ['La Villa'],
+    'El_Rosario L6': ['Tezozomoc L6', 'Aquiles Serdan', 'El_Rosario L7'],
+    'Tezozomoc L6': ['El_Rosario L6', 'UAM_Azcapotzalco L6'],
+    'UAM_Azcapotzalco L6': ['Tezozómoc', 'Ferreria L6'],
+    'Ferreria L6': ['UAM_Azcapotzalco L6', 'Norte_45 L6'],
+    'Norte_45 L6': ['Ferreria L6', 'Vallejo L6'],
+    'Vallejo L6': ['Norte_45 L6', 'Instituto_del_Petroleo L6'],
+    'Instituto_del_Petroleo L6': ['Vallejo L6', 'Lindavista L6'],
+    'Lindavista L6': ['Instituto_del_Petroleo L6', 'Deportivo_18_de_Marzo L6'],
+    'Deportivo_18_de_Marzo L6': ['Lindavista L6', 'La_Villa L6', 'Deportivo_18_de_Marzo L3'],
+    'La_Villa L6': ['Martin_Carrera L6', 'Deportivo_18_de_Marzo L6'],
+    'Martin_Carrera L6': ['La_Villa L6'],
 
     #Linea 7
-    'El Rosario L7': ['Aquiles Serdan', 'El Rosario L6'],
-    'Aquiles Serdan': ['El Rosario L7', 'Camarones'],
-    'Camarones': ['Aquiles Serdan', 'Refineria'],
-    'Refineria': ['Camarones', 'Tacuba L7'],
-    'Tacuba L7': ['Refineria', 'San Joaquin', 'Tacuba L2'],
-    'San Joaquin': ['Tacuba L7', 'Polanco'],
-    'Polanco': ['San Joaquin', 'Auditorio'],
-    'Auditorio': ['Polanco', 'Constituyentes'],
-    'Constituyentes': ['Auditorio', 'Tacubaya L7'],
-    'Tacubaya L7': ['Constituyentes', 'San Pedro de los Pinos', 'Tacubaya L1', 'Tacubaya L9'],
-    'San Pedro de los Pinos': ['Tacubaya L7', 'San Antonio'],
-    'San Antonio': ['San Pedro de los Pinos', 'Mixcoac L7'],
-    'Mixcoac L7': ['San Antonio', 'Barranca del Muerto', 'Mixcoac L12'],
-    'Barranca del Muerto': ['Mixcoac L7'],
+    'El_Rosario L7': ['Aquiles_Serdan L7', 'El_Rosario L6'],
+    'Aquiles_Serdan L7': ['El_Rosario L7', 'Camarones L7'],
+    'Camarones L7': ['Aquiles Serdan', 'Refineria L7'],
+    'Refineria L7': ['Camarones L7', 'Tacuba L7'],
+    'Tacuba L7': ['Refineria L7', 'San_Joaquin L7', 'Tacuba L2'],
+    'San_Joaquin L7': ['Tacuba L7', 'Polanco L7'],
+    'Polanco L7': ['San_Joaquin L7', 'Auditorio L7'],
+    'Auditorio L7': ['Polanco L7', 'Constituyentes L7'],
+    'Constituyentes L7': ['Auditorio L7', 'Tacubaya L7'],
+    'Tacubaya L7': ['Constituyentes L7', 'San_Pedro_de_los_Pinos L7', 'Tacubaya L1', 'Tacubaya L9'],
+    'San_Pedro_de_los_Pinos L7': ['Tacubaya L7', 'San_Antonio L7'],
+    'San_Antonio L7': ['San_Pedro_de_los_Pinos L7', 'Mixcoac L7'],
+    'Mixcoac L7': ['San_Antonio L7', 'Barranca_del_Muerto L7', 'Mixcoac L12'],
+    'Barranca_del_Muerto L7': ['Mixcoac L7'],
 
     #Linea 8
-    'Garibaldi L8': ['Bellas Artes L8', 'Garibaldi LB'],
-    'Bellas Artes L8': ['Garibaldi L8', 'San Juan de Letran'],
-    'San Juan de Letran': ['Bellas Artes L8', 'Salto del Agua L8'],
-    'Salto del Agua L8': ['San Juan de Letrán', 'Doctores'],
-    'Doctores': ['Salto del Agua L8', 'Obrera'],
-    'Obrera': ['Doctores', 'Chabacano L8'],
-    'Chabacano L8': ['Obrera', 'La Viga', 'Chabacano L9'],
-    'La Viga': ['Chabacano L8', 'Santa Anita L8'],
-    'Santa Anita L8': ['La Viga', 'Coyuya', 'Santa Anita L4'],
-    'Coyuya': ['Santa Anita L8', 'Iztacalco'],
-    'Iztacalco': ['Coyuya', 'Apatlaco'],
-    'Apatlaco': ['Iztacalco', 'Aculco'],
-    'Aculco': ['Apatlaco', 'Escuadrón 201'],
-    'Escuadrón 201': ['Aculco', 'Atlalilco L8'],
-    'Atlalilco L8': ['Escuadrón 201', 'Iztapalapa', 'Atlalilco L12'],
-    'Iztapalapa': ['Atlalilco L8', 'Cerro de la Estrella'],
-    'Cerro de la Estrella': ['Iztapalapa', 'UAM-I'],
-    'UAM-I': ['Cerro de la Estrella', 'Constitucion de 1917'],
-    'Constitucion de 1917': ['UAM-I'],
+    'Garibaldi L8': ['Bellas_Artes L8', 'Garibaldi LB'],
+    'Bellas_Artes L8': ['Garibaldi L8', 'San_Juan_de_Letran L8'],
+    'San_Juan_de_Letran L8': ['Bellas Artes L8', 'Salto_del_Agua L8'],
+    'Salto_del_Agua L8': ['San_Juan_de_Letran L8', 'Doctores L8'],
+    'Doctores L8': ['Salto_del_Agua L8', 'Obrera L8'],
+    'Obrera L8': ['Doctores L8', 'Chabacano L8'],
+    'Chabacano L8': ['Obrera L8', 'La Viga', 'Chabacano L9'],
+    'La Viga': ['Chabacano L8', 'Santa_Anita L8'],
+    'Santa_Anita L8': ['La Viga', 'Coyuya L8', 'Santa Anita L4'],
+    'Coyuya L8': ['Santa_Anita L8', 'Iztacalco L8'],
+    'Iztacalco L8': ['Coyuya L8', 'Apatlaco L8'],
+    'Apatlaco L8': ['Iztacalco L8', 'Aculco L8'],
+    'Aculco L8': ['Apatlaco L8', 'Escuadron_201 L8'],
+    'Escuadron_201 L8': ['Aculco L8', 'Atlalilco L8'],
+    'Atlalilco L8': ['Escuadron_201 L8', 'Iztapalapa L8', 'Atlalilco L12'],
+    'Iztapalapa L8': ['Atlalilco L8', 'Cerro_de_la_Estrella L8'],
+    'Cerro_de_la_Estrella L8': ['Iztapalapa L8', 'UAM-I L8'],
+    'UAM-I L8': ['Cerro_de_la_Estrella L8', 'Constitucion_de_1917 L8'],
+    'Constitucion_de_1917 L8': ['UAM-I L8'],
 
     #Linea 9
-    'Pantitlan L9': ['Puebla', 'Pantitlan L1', 'Pantitlan L5', 'Pantitlan LA'],
-    'Puebla': ['Pantitlan L9', 'Ciudad Deportiva'],
-    'Ciudad Deportiva': ['Puebla', 'Velodromo'],
-    'Velodromo': ['Ciudad Deportiva', 'Mixiuhca'],
-    'Mixiuhca': ['Velodromo', 'Jamaica L9'],
-    'Jamaica L9': ['Mixiuhca', 'Chabacano L9'],
-    'Chabacano L9': ['Jamaica L9', 'Lazaro Cardenas', 'Chabacano L2', 'Chabacano L8'],
-    'Lazaro Cardenas': ['Chabacano', 'Centro Medico L8'],
-    'Centro Medico L8': ['Lazaro Cardenas', 'Chilpancingo', 'Centro Medico L3'],
-    'Chilpancingo': ['Centro Medico L8', 'Patriotismo'],
-    'Patriotismo': ['Chilpancingo', 'Tacubaya L9'],
-    'Tacubaya L9': ['Patriotismo', 'Tacubaya L7', 'Tacubaya L1'],
+    'Pantitlan L9': ['Puebla L9', 'Pantitlan L1', 'Pantitlan L5', 'Pantitlan LA'],
+    'Puebla L9': ['Pantitlan L9', 'Ciudad_Deportiva L9'],
+    'Ciudad_Deportiva L9': ['Puebla L9', 'Velodromo L9'],
+    'Velodromo L9': ['Ciudad_Deportiva L9', 'Mixiuhca L9'],
+    'Mixiuhca L9': ['Velodromo L9', 'Jamaica L9'],
+    'Jamaica L9': ['Mixiuhca L9', 'Chabacano L9'],
+    'Chabacano L9': ['Jamaica L9', 'Lazaro_Cardenas L9', 'Chabacano L2', 'Chabacano L8'],
+    'Lazaro_Cardenas L9': ['Chabacano', 'Centro_Medico L9'],
+    'Centro_Medico L9': ['Lazaro_Cardenas L9', 'Chilpancingo L9', 'Centro Medico L3'],
+    'Chilpancingo L9': ['Centro_Medico L9', 'Patriotismo L9'],
+    'Patriotismo L9': ['Chilpancingo L9', 'Tacubaya L9'],
+    'Tacubaya L9': ['Patriotismo L9', 'Tacubaya L7', 'Tacubaya L1'],
 
     #Linea A
-    'Pantitlan LA': ['Agricola Oriental', 'Pantitlan L1', 'Pantitlan L5', 'Pantitlan L9'],
-    'Agricola Oriental': ['Pantitlan LA', 'Canal de San Juan'],
-    'Canal de San Juan': ['Agricola Oriental', 'Tepalcates'],
-    'Tepalcates': ['Canal de San Juan', 'Guelatao'],
-    'Guelatao': ['Tepalcates', 'Peñón Viejo'],
-    'Penon Viejo': ['Guelatao', 'Acatitla'],
-    'Acatitla': ['Penon Viejo', 'Santa Marta'],
-    'Santa Marta': ['Acatitla', 'Los Reyes'],
-    'Los Reyes': ['Santa Marta', 'La Paz'],
-    'La Paz': ['Los Reyes'],
+    'Pantitlan LA': ['Agricola_Oriental LA', 'Pantitlan L1', 'Pantitlan L5', 'Pantitlan L9'],
+    'Agricola_Oriental LA': ['Pantitlan LA', 'Canal_de_San_Juan LA'],
+    'Canal_de_San_Juan LA': ['Agricola_Oriental LA', 'Tepalcates LA'],
+    'Tepalcates LA': ['Canal_de_San_Juan LA', 'Guelatao LA'],
+    'Guelatao LA': ['Tepalcates LA', 'Penon_Viejo LA'],
+    'Penon_Viejo LA': ['Guelatao LA', 'Acatitla LA'],
+    'Acatitla LA': ['Penon_Viejo LA', 'Santa_Marta LA'],
+    'Santa_Marta LA': ['Acatitla LA', 'Los_Reyes LA'],
+    'Los_Reyes LA': ['Santa_Marta LA', 'La_Paz LA'],
+    'La_Paz LA': ['Los_Reyes LA'],
 
     #Linea B
-    'Buenavista': ['Guerrero LB'],
-    'Guerrero LB': ['Buenavista', 'Garibaldi LB', 'Guerrero L3'],
-    'Garibaldi LB': ['Guerrero LB', 'Lagunilla', 'Garibaldi L8'],
-    'Lagunilla': ['Garibaldi LB', 'Tepito'],
-    'Tepito': ['Lagunilla', 'Morelos LB'],
-    'Morelos LB': ['Tepito', 'San Lazaro LB', 'Morelos L4'],
-    'San Lazaro LB': ['Morelos LB', 'Ricardo Flores Magon', 'San Lazaro L1'],
-    'Ricardo Flores Magon': ['San Lazaro LB', 'Romero Rubio'],
-    'Romero Rubio': ['Ricardo Flores Magon', 'Oceania LB'],
-    'Oceania LB': ['Romero Rubio', 'Deportivo Oceania', 'Oceania L5'],
-    'Deportivo Oceania': ['Oceania LB', 'Villa de Aragón'],
-    'Villa de Aragón': ['Deportivo Oceania', 'Nezahualcoyotl'],
-    'Nezahualcoyotl': ['Villa de Aragón', 'Impulsora'],
-    'Impulsora': ['Nezahualcoyotl', 'Rio de los Remedios'],
-    'Rio de los Remedios': ['Impulsora', 'Muzquiz'],
-    'Muzquiz': ['Rio de los Remedios', 'Ecatepec'],
-    'Ecatepec': ['Muzquiz', 'Olimpica'],
-    'Olimpica': ['Ecatepec', 'Plaza Aragon'],
-    'Plaza Aragon': ['Olimpica', 'Ciudad Azteca'],
-    'Ciudad Azteca': ['Plaza Aragon'],
+    'Buenavista LB': ['Guerrero LB'],
+    'Guerrero LB': ['Buenavista LB', 'Garibaldi LB', 'Guerrero L3'],
+    'Garibaldi LB': ['Guerrero LB', 'Lagunilla LB', 'Garibaldi L8'],
+    'Lagunilla LB': ['Garibaldi LB', 'Tepito LB'],
+    'Tepito LB': ['Lagunilla LB', 'Morelos LB'],
+    'Morelos LB': ['Tepito LB', 'San_Lazaro LB', 'Morelos L4'],
+    'San_Lazaro LB': ['Morelos LB', 'Ricardo_Flores_Magon LB', 'San_Lazaro L1'],
+    'Ricardo_Flores_Magon LB': ['San_Lazaro LB', 'Romero_Rubio LB'],
+    'Romero_Rubio LB': ['Ricardo_Flores_Magon LB', 'Oceania LB'],
+    'Oceania LB': ['Romero_Rubio LB', 'Deportivo_Oceania LB', 'Oceania L5'],
+    'Deportivo_Oceania LB': ['Oceania LB', 'Villa_de_Aragon LB'],
+    'Villa_de_Aragon LB': ['Deportivo_Oceania LB', 'Nezahualcoyotl LB'],
+    'Nezahualcoyotl LB': ['Villa_de_Aragon LB', 'Impulsora LB'],
+    'Impulsora LB': ['Nezahualcoyotl LB', 'Rio_de_los_Remedios LB'],
+    'Rio_de_los_Remedios LB': ['Impulsora LB', 'Muzquiz LB'],
+    'Muzquiz LB': ['Rio_de_los_Remedios LB', 'Ecatepec LB'],
+    'Ecatepec LB': ['Muzquiz LB', 'Olimpica LB'],
+    'Olimpica LB': ['Ecatepec LB', 'Plaza_Aragon LB'],
+    'Plaza_Aragon LB': ['Olimpica LB', 'Ciudad_Azteca LB'],
+    'Ciudad_Azteca LB': ['Plaza_Aragon LB'],
 
     #Linea 12
-    'Mixcoac L12': ['Insurgentes Sur', 'Mixcoac L7'],
-    'Insurgentes Sur': ['Mixcoac L12', '20 de Noviembre'],
-    '20 de Noviembre': ['Insurgentes Sur', 'Zapata L12'],
-    'Zapata L12': ['20 de Noviembre', 'Parque de los Venados', 'Zapata L3'],
-    'Parque de los Venados': ['Zapata L12', 'Eje Central'],
-    'Eje Central': ['Parque de los Venados', 'Ermita L12'],
-    'Ermita L12': ['Eje Central', 'Mexicaltzingo', 'Ermita L12'],
-    'Mexicaltzingo': ['Ermita L2', 'Atlalilco L12'],
-    'Atlalilco L12': ['Mexicaltzingo', 'Culhuacan', 'Atlalilco L8'],
-    'Culhuacan': ['Atlalilco L12', 'San Andres Tomatlán'],
-    'San Andres Tomatlan': ['Culhuacan', 'Lomas Estrella'],
-    'Lomas Estrella': ['San Andres Tomatlan', 'Calle 11'],
-    'Calle 11': ['Lomas Estrella', 'Periferico Oriente'],
-    'Periferico Oriente': ['Calle 11', 'Tezonco'],
-    'Tezonco': ['Periferico Oriente', 'Olivos'],
-    'Olivos': ['Tezonco', 'Nopalera'],
-    'Nopalera': ['Olivos', 'Zapotitlan'],
-    'Zapotitlan': ['Nopalera', 'Tlaltenco'],
-    'Tlaltenco': ['Zapotitlan', 'Tlahuac'],
-    'Tlahuac': ['Tlaltenco']
+    'Mixcoac L12': ['Insurgentes_Sur L12', 'Mixcoac L7'],
+    'Insurgentes_Sur L12': ['Mixcoac L12', '20_de_Noviembre L12'],
+    '20_de_Noviembre L12': ['Insurgentes_Sur L12', 'Zapata L12'],
+    'Zapata L12': ['20_de_Noviembre L12', 'Parque_de_los_Venados L12', 'Zapata L3'],
+    'Parque_de_los_Venados L12': ['Zapata L12', 'Eje_Central L12'],
+    'Eje_Central L12': ['Parque_de_los_Venados L12', 'Ermita L12'],
+    'Ermita L12': ['Eje_Central L12', 'Mexicaltzingo L12', 'Ermita L12'],
+    'Mexicaltzingo L12': ['Ermita L2', 'Atlalilco L12'],
+    'Atlalilco L12': ['Mexicaltzingo L12', 'Culhuacan L12', 'Atlalilco L8'],
+    'Culhuacan L12': ['Atlalilco L12', 'San_Andres_Tomatlan L12'],
+    'San_Andres_Tomatlan L12': ['Culhuacan L12', 'Lomas_Estrella L12'],
+    'Lomas_Estrella L12': ['San_Andres_Tomatlan L12', 'Calle_11 L12'],
+    'Calle_11 L12': ['Lomas_Estrella L12', 'Periferico_Oriente L12'],
+    'Periferico_Oriente L12': ['Calle_11 L12', 'Tezonco L12'],
+    'Tezonco L12': ['Periferico_Oriente L12', 'Olivos L12'],
+    'Olivos L12': ['Tezonco L12', 'Nopalera L12'],
+    'Nopalera L12': ['Olivos L12', 'Zapotitlan L12'],
+    'Zapotitlan L12': ['Nopalera L12', 'Tlaltenco L12'],
+    'Tlaltenco L12': ['Zapotitlan L12', 'Tlahuac L12'],
+    'Tlahuac L12': ['Tlaltenco L12']
 }
 
 def encontrar_ruta(metro, inicio, destino):
@@ -409,6 +409,170 @@ def print_stations_by_line():
         print(f"\n{line}:")
         for station in sorted(lines[line]):
             print(f"  - {station}")
+
+
+# Definir las zonas y subzonas
+zonas = {
+    "Zona1": {
+        "Subzona1": ["Ciudad_Azteca LB", "Plaza_Aragon LB", "Olimpica LB", "Ecatepec LB", "Muzquiz LB",
+                     "Rio_de_los_Remedios LB"],
+        "Subzona2": ["Impulsora LB", "Nezahualcoyotl LB", "Villa_de_Aragon LB", "Bosque_de_Aragon LB",
+                     "Deportivo_Oceania LB"]
+    },
+    "Zona2": {
+        "Subzona1": ["Martin_Carrera L6", "Martin_Carrera L4", "Talisman L4", "La_Villa L4"],
+        "Subzona2": ["Bondojito L4", "Consulado L5", "Consulado L4", "Valle_Gomez L5"],
+        "Subzona3": ["Misterios L5", "Tlaltelolco L3", "La_Raza L3", "La_Raza L5"],
+        "Subzona4": ["Politecnico L5", "Vallejo L6", "Instituto_del_Petroleo L6", "Instituto_del_Petroleo L5",
+                     "Autobuses_del_Norte L5"],
+        "Subzona5": ["Indios_Verdes L3", "Deportivo_18_de_Marzo L3", "Deportivo_18_de_Marzo L6", "Lindavista L6",
+                     "Potrero L3"]
+    },
+    "Zona3": {
+        "Subzona1": ["Oceania L5", "Oceania LB", "Eduardo_Molina L5", "Aragon L5", "Romero_Rubio LB",
+                     "Ricardo_Flores_Magon LB"],
+        "Subzona2": ["Canal_del_Norte L4", "Morelos L4", "Morelos LB", "Tepito LB", "Merced L1", "Candelaria L1",
+                     "Candelaria L4", "San_Lazaro LB", "San_Lazaro L1"],
+        "Subzona3": ["Moctezuma L1", "Balbuena L1", "Boulevard_Puerto_Aereo L1", "Terminal_Aerea L5", "Velodromo L9"],
+        "Subzona4": ["La_Viga L8", "Jamaica L9", "Jamaica L4", "Mixiuhca L9", "Velodromo L9", "Santa_Anita L8",
+                     "Santa_Anita L4"],
+        "Subzona5": ["Pantitlan L5", "Pantitlan L9", "Pantitlan L1", "Pantitlan LA", "Puebla L9", "Ciudad_deportiva L9",
+                     "Zaragoza L1", "Hangares L5", "Gomez_Farias L1"]
+    },
+    "Zona4": {
+        "Subzona1": ["Agricola_Oriental LA", "Canal_de_San_Juan LA", "Tepalcates LA", "Guelatao LA"],
+        "Subzona2": ["Penon_Viejo LA", "Acatitla LA", "Santa_Marta LA", "Los_Reyes LA", "La_Paz LA"]
+    },
+    "Zona5": {
+        "Subzona1": ["Coyuya L8", "Iztacalco L8", "Apatlalco L8"],
+        "Subzona2": ["Aculco L8", "Escuadron_201 L8", "Atlalilco L12", "Atlalilco L8", "Iztapalapa L8",
+                     "Mexicaltzingo L12"],
+        "Subzona3": ["Cerro_de_la_Estrella L8", "UAM-1 L8", "Constitucion_de_1917 L8"],
+        "Subzona4": ["Culhuacan L12", "San_Andres_Tomatlan L12", "Lomas_Estrella L12", "Calle_11 L12"],
+        "Subzona5": ["Periferico_Oriente L12", "Tezonco L12", "Olivos L12", "Nopalera L12", "Zapotitlan L12",
+                     "Tlaltenco L12", "Tlahuac L12"]
+    },
+    "Zona6": {
+        "Subzona1": ["Division_del_Norte L3", "Zapata L3", "Zapata L12", "Parque_de_los_Venados L12",
+                     "Eje_Central L12"],
+        "Subzona2": ["Mixcoac L12", "Mixcoac L7", "Barranca_del_Muerto L7", "Hospital_20_de_Noviembre L12",
+                     "Insurgentes_Sur L12", "Coyoacan L3"],
+        "Subzona3": ["Universidad L3", "Copilco L3", "Miguel_Angel_de_Quevedo L3", "Viveros L3"],
+        "Subzona4": ["Nativitas L2", "Portales L2", "Ermita L12", "Ermita L2", "General_Anaya L2", "Tasquena L2"]
+    },
+
+}
+
+
+# Función para encontrar la zona y subzona de una estación
+def encontrar_zona_subzona(estacion):
+    for zona, subzonas in zonas.items():
+        for subzona, estaciones in subzonas.items():
+            if estacion in estaciones:
+                return zona, subzona
+    return None, None
+
+# Búsqueda de la ruta entre estaciones
+def encontrar_ruta(estacion_inicio, estacion_destino):
+    zona_inicio, subzona_inicio = encontrar_zona_subzona(estacion_inicio)
+    zona_destino, subzona_destino = encontrar_zona_subzona(estacion_destino)
+
+    if zona_inicio == zona_destino:
+        if subzona_inicio == subzona_destino:
+            # Ruta dentro de la misma subzona
+            return busqueda_interzonal(estacion_inicio, estacion_destino)
+        else:
+            # Ruta dentro de la misma zona pero diferentes subzonas
+            return busqueda_entre_subzonas(estacion_inicio, estacion_destino, zona_inicio)
+    else:
+        # Ruta entre diferentes zonas
+        return busqueda_entre_zonas(estacion_inicio, estacion_destino)
+
+# Implementación de búsquedas específicas (dentro de una subzona, entre subzonas y entre zonas)
+def busqueda_interzonal(estacion_inicio, estacion_destino):
+    # BFS para búsqueda de la ruta más corta dentro de una subzona
+    from collections import deque
+
+    visitados = set()
+    cola = deque([[estacion_inicio]])
+
+    while cola:
+        ruta = cola.popleft()
+        estacion_actual = ruta[-1]
+
+        if estacion_actual == estacion_destino:
+            return ruta
+
+        if estacion_actual not in visitados:
+            visitados.add(estacion_actual)
+            for vecino in metro_cdmx.get(estacion_actual, []):
+                if vecino not in visitados:
+                    nueva_ruta = list(ruta)
+                    nueva_ruta.append(vecino)
+                    cola.append(nueva_ruta)
+
+    return None  # Si no hay ruta
+
+
+def busqueda_entre_subzonas(estacion_inicio, estacion_destino, zona):
+    # Encuentra la subzona de inicio y destino
+    subzona_inicio, subzona_destino = None, None
+    for subzona, estaciones in zonas[zona].items():
+        if estacion_inicio in estaciones:
+            subzona_inicio = subzona
+        if estacion_destino in estaciones:
+            subzona_destino = subzona
+
+    if subzona_inicio == subzona_destino:
+        # Mismo subzona, búsqueda interzonal
+        return busqueda_interzonal(estacion_inicio, estacion_destino)
+    else:
+        # Diferentes subzonas, conecta a través de BFS entre subzonas
+        ruta = busqueda_interzonal(estacion_inicio, estacion_destino)
+        if ruta:
+            return ruta
+        else:
+            # Si no hay ruta directa, buscar transbordos
+            # Aquí puedes implementar una búsqueda que intente conectar ambas subzonas vía estaciones de transbordo
+            for estacion in zonas[zona][subzona_inicio]:
+                for destino in zonas[zona][subzona_destino]:
+                    inter_ruta = busqueda_interzonal(estacion, destino)
+                    if inter_ruta:
+                        return [estacion_inicio] + inter_ruta + [estacion_destino]
+
+    return None  # Si no hay ruta
+
+
+def busqueda_entre_zonas(estacion_inicio, estacion_destino):
+    # Encuentra la zona y subzona de inicio y destino
+    zona_inicio, subzona_inicio = encontrar_zona_subzona(estacion_inicio)
+    zona_destino, subzona_destino = encontrar_zona_subzona(estacion_destino)
+
+    # Si están en la misma zona, utiliza `busqueda_entre_subzonas`
+    if zona_inicio == zona_destino:
+        return busqueda_entre_subzonas(estacion_inicio, estacion_destino, zona_inicio)
+    else:
+        # Diferentes zonas: intenta conectar a través de transbordos
+        # Primero busca ruta en zona de inicio hacia una estación de transbordo a la otra zona
+        ruta_inicio = []
+        for estacion_intermedia in zonas[zona_inicio][subzona_inicio]:
+            ruta_inicio = busqueda_interzonal(estacion_inicio, estacion_intermedia)
+            if ruta_inicio:
+                break
+
+        # Luego, busca ruta en la zona de destino desde una estación de transbordo
+        ruta_destino = []
+        for estacion_intermedia in zonas[zona_destino][subzona_destino]:
+            ruta_destino = busqueda_interzonal(estacion_intermedia, estacion_destino)
+            if ruta_destino:
+                break
+
+        if ruta_inicio and ruta_destino:
+            # Concatena la ruta de inicio y la ruta de destino
+            return ruta_inicio + ruta_destino[1:]
+
+    return None  # Si no hay ruta
+
 
 def main():
     router = MexicoCityMetroRouter(metro_cdmx)

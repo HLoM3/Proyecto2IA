@@ -265,11 +265,11 @@ def encontrar_ruta(metro, inicio, destino):
 
 
 # Ejemplo de uso
-inicio = 'Universidad'
-destino = 'Buenavista LB'
-ruta = encontrar_ruta(metro_cdmx, inicio, destino)
+#inicio = 'Universidad'
+#destino = 'Buenavista LB'
+#ruta = encontrar_ruta(metro_cdmx, inicio, destino)
 
-print("Ruta de {} a {}: {}".format(inicio, destino, ruta))
+#print("Ruta de {} a {}: {}".format(inicio, destino, ruta))
 
 
 # Definir las zonas y subzonas
@@ -279,35 +279,146 @@ zonas = {
         "Subzona2": ["Impulsora LB", "Nezahualcoyotl LB", "Villa_de_Aragon LB", "Bosque_de_Aragon LB", "Deportivo_Oceania LB"]
     },
     "Zona2": {
-        "Subzona1": ["Martin_Carrera L6", "Martin_Carrera L4", "Talisman L4", "La_Villa L4"],
-        "Subzona2": ["Bondojito L4", "Consulado L5", "Consulado L4", "Valle_Gomez L5"],
-        "Subzona3": ["Misterios L5", "Tlaltelolco L3", "La_Raza L3", "La_Raza L5"],
-        "Subzona4": ["Politecnico L5", "Vallejo L6", "Instituto_del_Petroleo L6", "Instituto_del_Petroleo L5", "Autobuses_del_Norte L5"],
-        "Subzona5": ["Indios_Verdes L3", "Deportivo_18_de_Marzo L3", "Deportivo_18_de_Marzo L6", "Lindavista L6", "Potrero L3"]
+        "Subzona3": ["Martin_Carrera L6", "Martin_Carrera L4", "Talisman L4", "La_Villa L4"],
+        "Subzona4": ["Bondojito L4", "Consulado L5", "Consulado L4", "Valle_Gomez L5"],
+        "Subzona5": ["Misterios L5", "Tlaltelolco L3", "La_Raza L3", "La_Raza L5"],
+        "Subzona6": ["Politecnico L5", "Vallejo L6", "Instituto_del_Petroleo L6", "Instituto_del_Petroleo L5", "Autobuses_del_Norte L5"],
+        "Subzona7": ["Indios_Verdes L3", "Deportivo_18_de_Marzo L3", "Deportivo_18_de_Marzo L6", "Lindavista L6", "Potrero L3"]
     },
     "Zona3": {
-        "Subzona1": ["Oceania L5", "Oceania LB", "Eduardo_Molina L5", "Aragon L5", "Romero_Rubio LB", "Ricardo_Flores_Magon LB"],
-        "Subzona2": ["Canal_del_Norte L4", "Morelos L4", "Morelos LB", "Tepito LB", "Merced L1", "Candelaria L1", "Candelaria L4", "San_Lazaro LB", "San_Lazaro L1"],
-        "Subzona3": ["Moctezuma L1", "Balbuena L1", "Boulevard_Puerto_Aereo L1", "Terminal_Aerea L5", "Velodromo L9"],
-        "Subzona4": ["La_Viga L8", "Jamaica L9", "Jamaica L4", "Mixiuhca L9", "Velodromo L9", "Santa_Anita L8", "Santa_Anita L4"],
-        "Subzona5": ["Pantitlan L5", "Pantitlan L9", "Pantitlan L1", "Pantitlan LA", "Puebla L9", "Ciudad_deportiva L9", "Zaragoza L1", "Hangares L5", "Gomez_Farias L1"]
+        "Subzona8": ["Oceania L5", "Oceania LB", "Eduardo_Molina L5", "Aragon L5", "Romero_Rubio LB", "Ricardo_Flores_Magon LB"],
+        "Subzona9": ["Canal_del_Norte L4", "Morelos L4", "Morelos LB", "Tepito LB", "Merced L1", "Candelaria L1", "Candelaria L4", "San_Lazaro LB", "San_Lazaro L1"],
+        "Subzona10": ["Moctezuma L1", "Balbuena L1", "Boulevard_Puerto_Aereo L1", "Terminal_Aerea L5", "Velodromo L9"],
+        "Subzona11": ["La_Viga L8", "Jamaica L9", "Jamaica L4", "Mixiuhca L9", "Velodromo L9", "Santa_Anita L8", "Santa_Anita L4"],
+        "Subzona12": ["Pantitlan L5", "Pantitlan L9", "Pantitlan L1", "Pantitlan LA", "Puebla L9", "Ciudad_deportiva L9", "Zaragoza L1", "Hangares L5", "Gomez_Farias L1"]
     },
     "Zona4": {
-        "Subzona1": ["Agricola_Oriental LA", "Canal_de_San_Juan LA", "Tepalcates LA", "Guelatao LA"],
-        "Subzona2": ["Penon_Viejo LA", "Acatitla LA", "Santa_Marta LA", "Los_Reyes LA", "La_Paz LA"]
+        "Subzona13": ["Agricola_Oriental LA", "Canal_de_San_Juan LA", "Tepalcates LA", "Guelatao LA"],
+        "Subzona14": ["Penon_Viejo LA", "Acatitla LA", "Santa_Marta LA", "Los_Reyes LA", "La_Paz LA"]
     },
     "Zona5": {
-        "Subzona1": ["Coyuya L8", "Iztacalco L8", "Apatlalco L8"],
-        "Subzona2": ["Aculco L8", "Escuadron_201 L8", "Atlalilco L12", "Atlalilco L8", "Iztapalapa L8", "Mexicaltzingo L12"],
-        "Subzona3": ["Cerro_de_la_Estrella L8", "UAM-1 L8", "Constitucion_de_1917 L8"],
-        "Subzona4": ["Culhuacan L12", "San_Andres_Tomatlan L12", "Lomas_Estrella L12", "Calle_11 L12"],
-        "Subzona5": ["Periferico_Oriente L12", "Tezonco L12", "Olivos L12", "Nopalera L12", "Zapotitlan L12", "Tlaltenco L12", "Tlahuac L12"]
+        "Subzona15": ["Coyuya L8", "Iztacalco L8", "Apatlalco L8"],
+        "Subzona16": ["Aculco L8", "Escuadron_201 L8", "Atlalilco L12", "Atlalilco L8", "Iztapalapa L8", "Mexicaltzingo L12"],
+        "Subzona17": ["Cerro_de_la_Estrella L8", "UAM-1 L8", "Constitucion_de_1917 L8"],
+        "Subzona18": ["Culhuacan L12", "San_Andres_Tomatlan L12", "Lomas_Estrella L12", "Calle_11 L12"],
+        "Subzona19": ["Periferico_Oriente L12", "Tezonco L12", "Olivos L12", "Nopalera L12", "Zapotitlan L12", "Tlaltenco L12", "Tlahuac L12"]
     },
     "Zona6": {
-        "Subzona1": ["Division_del_Norte L3", "Zapata L3", "Zapata L12", "Parque_de_los_Venados L12", "Eje_Central L12"],
-        "Subzona2": ["Mixcoac L12", "Mixcoac L7", "Barranca_del_Muerto L7", "Hospital_20_de_Noviembre L12", "Insurgentes_Sur L12", "Coyoacan L3"],
-        "Subzona3": ["Universidad L3", "Copilco L3", "Miguel_Angel_de_Quevedo L3", "Viveros L3"],
-        "Subzona4": ["Nativitas L2", "Portales L2", "Ermita L12", "Ermita L2", "General_Anaya L2", "Tasquena L2"]
+        "Subzona20": ["Division_del_Norte L3", "Zapata L3", "Zapata L12", "Parque_de_los_Venados L12", "Eje_Central L12"],
+        "Subzona21": ["Mixcoac L12", "Mixcoac L7", "Barranca_del_Muerto L7", "Hospital_20_de_Noviembre L12", "Insurgentes_Sur L12", "Coyoacan L3"],
+        "Subzona22": ["Universidad L3", "Copilco L3", "Miguel_Angel_de_Quevedo L3", "Viveros L3"],
+        "Subzona23": ["Nativitas L2", "Portales L2", "Ermita L12", "Ermita L2", "General_Anaya L2", "Tasquena L2"]
     },
 
 }
+
+# Implementación de búsquedas específicas (dentro de una subzona, entre subzonas y entre zonas)
+def busqueda_interzonal(estacion_inicio, estacion_destino):
+    # BFS para búsqueda de la ruta más corta dentro de una subzona
+    from collections import deque
+
+    visitados = set()
+    cola = deque([[estacion_inicio]])
+
+    while cola:
+        ruta = cola.popleft()
+        estacion_actual = ruta[-1]
+
+        if estacion_actual == estacion_destino:
+            return ruta
+
+        if estacion_actual not in visitados:
+            visitados.add(estacion_actual)
+            for vecino in metro_cdmx.get(estacion_actual, []):
+                if vecino not in visitados:
+                    nueva_ruta = list(ruta)
+                    nueva_ruta.append(vecino)
+                    cola.append(nueva_ruta)
+
+    return None  # Si no hay ruta
+
+
+def busqueda_entre_subzonas(estacion_inicio, estacion_destino, zona):
+    # Encuentra la subzona de inicio y destino
+    subzona_inicio, subzona_destino = None, None
+    for subzona, estaciones in zonas[zona].items():
+        if estacion_inicio in estaciones:
+            subzona_inicio = subzona
+        if estacion_destino in estaciones:
+            subzona_destino = subzona
+
+    if subzona_inicio == subzona_destino:
+        # Mismo subzona, búsqueda interzonal
+        return busqueda_interzonal(estacion_inicio, estacion_destino)
+    else:
+        # Diferentes subzonas, conecta a través de BFS entre subzonas
+        ruta = busqueda_interzonal(estacion_inicio, estacion_destino)
+        if ruta:
+            return ruta
+        else:
+            # Si no hay ruta directa, buscar transbordos
+            # Aquí puedes implementar una búsqueda que intente conectar ambas subzonas vía estaciones de transbordo
+            for estacion in zonas[zona][subzona_inicio]:
+                for destino in zonas[zona][subzona_destino]:
+                    inter_ruta = busqueda_interzonal(estacion, destino)
+                    if inter_ruta:
+                        return [estacion_inicio] + inter_ruta + [estacion_destino]
+
+    return None  # Si no hay ruta
+
+def encontrar_zona_subzona(estacion):
+    for zona, subzonas in zonas.items():
+        for subzona, estaciones in subzonas.items():
+            if estacion in estaciones:
+                return zona, subzona
+    return None, None
+
+# Búsqueda de la ruta entre estaciones
+def encontrar_ruta(estacion_inicio, estacion_destino):
+    zona_inicio, subzona_inicio = encontrar_zona_subzona(estacion_inicio)
+    zona_destino, subzona_destino = encontrar_zona_subzona(estacion_destino)
+
+    if zona_inicio == zona_destino:
+        if subzona_inicio == subzona_destino:
+            # Ruta dentro de la misma subzona
+            return busqueda_interzonal(estacion_inicio, estacion_destino)
+        else:
+            # Ruta dentro de la misma zona pero diferentes subzonas
+            return busqueda_entre_subzonas(estacion_inicio, estacion_destino, zona_inicio)
+    else:
+        # Ruta entre diferentes zonas
+        return busqueda_entre_zonas(estacion_inicio, estacion_destino)
+
+def busqueda_entre_zonas(estacion_inicio, estacion_destino):
+    # Encuentra la zona y subzona de inicio y destino
+    zona_inicio, subzona_inicio = encontrar_zona_subzona(estacion_inicio)
+    zona_destino, subzona_destino = encontrar_zona_subzona(estacion_destino)
+
+    # Si están en la misma zona, utiliza `busqueda_entre_subzonas`
+    if zona_inicio == zona_destino:
+        return busqueda_entre_subzonas(estacion_inicio, estacion_destino, zona_inicio)
+    else:
+        # Diferentes zonas: intenta conectar a través de transbordos
+        # Primero busca ruta en zona de inicio hacia una estación de transbordo a la otra zona
+        ruta_inicio = []
+        for estacion_intermedia in zonas[zona_inicio][subzona_inicio]:
+            ruta_inicio = busqueda_interzonal(estacion_inicio, estacion_intermedia)
+            if ruta_inicio:
+                break
+
+        # Luego, busca ruta en la zona de destino desde una estación de transbordo
+        ruta_destino = []
+        for estacion_intermedia in zonas[zona_destino][subzona_destino]:
+            ruta_destino = busqueda_interzonal(estacion_intermedia, estacion_destino)
+            if ruta_destino:
+                break
+
+        if ruta_inicio and ruta_destino:
+            # Concatena la ruta de inicio y la ruta de destino
+            return ruta_inicio + ruta_destino[1:]
+
+    return None  # Si no hay ruta
+
+print(encontrar_zona_subzona("Impulsora LB"))
+
+print(encontrar_ruta("Indios_Verdes L3", "Potrero L3"))
