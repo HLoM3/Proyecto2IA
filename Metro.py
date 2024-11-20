@@ -1,6 +1,23 @@
-from collections import deque
+from dataclasses import dataclass
+from typing import Dict, List, NamedTuple, Set, Tuple, Optional
+from datetime import datetime
+import json
+from collections import defaultdict, deque
 
-
+def print_stations_by_line():
+    """Imprime todas las estaciones organizadas por línea"""
+    lineas = defaultdict(list)
+    for estacion in metro_cdmx.keys():
+        if ' L' in estacion:
+            linea = 'L' + estacion.split(' L')[1]
+            nombre_base = estacion.split(' L')[0]
+            lineas[linea].append(nombre_base)
+    
+    print("\nEstaciones por línea:")
+    for linea in sorted(lineas.keys()):
+        print(f"\n{linea}:")
+        for estacion in sorted(lineas[linea]):
+            print(f"  - {estacion}")
 
 
 
@@ -243,35 +260,6 @@ metro_cdmx = {
 }
 
 
-"""def encontrar_ruta(metro, inicio, destino):
-    # Cola para BFS
-    queue = deque([(inicio, [inicio])])  # Cada elemento es una tupla (estación actual, ruta tomada)
-    visitados = set()  # Para no visitar estaciones dos veces
-
-    while queue:
-        estacion_actual, ruta = queue.popleft()
-        # Si llegamos al destino, devolvemos la ruta
-        if estacion_actual == destino:
-            return ruta
-        # Marcar como visitado
-        visitados.add(estacion_actual)
-
-        # Añadir las conexiones no visitadas a la cola
-        for vecino in metro.get(estacion_actual, []):
-            if vecino not in visitados:
-                queue.append((vecino, ruta + [vecino]))
-
-    return None  # Si no se encuentra ruta
-"""
-
-# Ejemplo de uso
-#inicio = 'Universidad'
-#destino = 'Buenavista LB'
-#ruta = encontrar_ruta(metro_cdmx, inicio, destino)
-
-#print("Ruta de {} a {}: {}".format(inicio, destino, ruta))
-
-
 # Definir las zonas y subzonas
 zonas = {
     "Zona1": {
@@ -333,125 +321,660 @@ zonas = {
     }
 }
 
-# Implementación de búsquedas específicas (dentro de una subzona, entre subzonas y entre zonas)
-def busqueda_interzonal(estacion_inicio, estacion_destino):
-    # BFS para búsqueda de la ruta más corta dentro de una subzona
-    from collections import deque
+@dataclass
+class Caso:
+    """Representa un caso almacenado de una ruta"""
+    origen: str
+    destino: str
+    ruta: List[str]
+    transbordos: List[Tuple[str, str, str]]  # estación, de_línea, a_línea
+    fecha_creacion: datetime
+    contador_uso: int = 0
+    calificacion_promedio: float = 0.0
+    total_calificaciones: int = 0
 
-    visitados = set()
-    cola = deque([[estacion_inicio]])
+@dataclass
+class Estacion:
+    """Representa una estación del metro con sus propiedades"""
+    nombre: str
+    lineas: List[str]
+    conexiones: List[str]
+    zona: str
+    subzona: str
+    es_transbordo: bool = False
 
-    while cola:
-        ruta = cola.popleft()
-        estacion_actual = ruta[-1]
+class RutaInfo(NamedTuple):
+    """Estructura para almacenar información sobre la ruta encontrada"""
+    ruta: List[str]
+    metodo: str  # 'casos', 'modelo' o 'hibrido'
+    similitud: float  # 0-1, relevante solo para método de casos
+    caso_base: Optional[str]  # Identificador del caso base si se usó CBR
+    calidad: float  # 0-1, calidad general de la ruta
 
-        if estacion_actual == estacion_destino:
-            return ruta
 
-        if estacion_actual not in visitados:
-            visitados.add(estacion_actual)
-            for vecino in metro_cdmx.get(estacion_actual, []):
+class GestorEstaciones:
+    """Gestiona la información y operaciones relacionadas con estaciones"""
+    def __init__(self, metro_cdmx: dict, zonas: dict):
+        self.estaciones: Dict[str, Estacion] = {}
+        self.lineas: Dict[str, List[str]] = defaultdict(list)
+        self.zonas = zonas
+        self._procesar_datos_metro(metro_cdmx)
+
+    def _procesar_datos_metro(self, metro_cdmx: dict):
+        """Procesa los datos del metro en objetos Estacion estructurados"""
+        for nombre_estacion, conexiones in metro_cdmx.items():
+            nombre_base = nombre_estacion.split(' L')[0]
+            linea = 'L' + nombre_estacion.split(' L')[1] if ' L' in nombre_estacion else None
+            
+            zona, subzona = self.encontrar_subzona(nombre_base)
+            
+            if nombre_base not in self.estaciones:
+                self.estaciones[nombre_base] = Estacion(
+                    nombre=nombre_base,
+                    lineas=[],
+                    conexiones=[],
+                    zona=zona,
+                    subzona=subzona
+                )
+            
+            if linea:
+                if linea not in self.estaciones[nombre_base].lineas:
+                    self.estaciones[nombre_base].lineas.append(linea)
+                self.lineas[linea].append(nombre_base)
+            
+            self.estaciones[nombre_base].conexiones.extend(
+                [conn.split(' L')[0] for conn in conexiones]
+            )
+            self.estaciones[nombre_base].conexiones = list(set(
+                self.estaciones[nombre_base].conexiones
+            ))
+        
+        # Marcar estaciones de transbordo
+        for estacion in self.estaciones.values():
+            estacion.es_transbordo = len(estacion.lineas) > 1
+
+    def encontrar_subzona(self, nombre_estacion: str) -> Tuple[str, str]:
+        """Encuentra la zona y subzona de una estación"""
+        for zona, subzonas in self.zonas.items():
+            for subzona, estaciones in subzonas.items():
+                if nombre_estacion in estaciones:
+                    return zona, subzona
+        return "Desconocida", "Desconocida"
+
+    def obtener_transbordos_zona(self, zona: str) -> List[str]:
+        """Encuentra estaciones de transbordo en una zona"""
+        return [
+            estacion.nombre for estacion in self.estaciones.values()
+            if estacion.zona == zona and estacion.es_transbordo
+        ]
+
+    def imprimir_estaciones_por_linea(self):
+        """Imprime todas las estaciones organizadas por línea"""
+        for linea in sorted(self.lineas.keys()):
+            print(f"\n{linea}:")
+            for estacion in sorted(self.lineas[linea]):
+                print(f"  - {estacion}")
+
+class GestorRutas:
+    """Gestiona la búsqueda y manejo de rutas"""
+    def __init__(self, gestor_estaciones: GestorEstaciones):
+        self.gestor_estaciones = gestor_estaciones
+
+    def busqueda_intrazonal(self, origen: str, destino: str) -> Optional[List[str]]:
+        """Búsqueda dentro de una misma zona"""
+        cola = deque([(origen, [origen])])
+        visitados = set()
+        
+        while cola:
+            actual, ruta = cola.popleft()
+            if actual == destino:
+                return ruta
+            
+            for vecino in self.gestor_estaciones.estaciones[actual].conexiones:
                 if vecino not in visitados:
-                    nueva_ruta = list(ruta)
-                    nueva_ruta.append(vecino)
-                    cola.append(nueva_ruta)
-
-    return None  # Si no hay ruta
-
-
-def busqueda_entre_subzonas(estacion_inicio, estacion_destino, zona):
-    # Encuentra la subzona de inicio y destino
-    subzona_inicio, subzona_destino = None, None
-    for subzona, estaciones in zonas[zona].items():
-        if estacion_inicio in estaciones:
-            subzona_inicio = subzona
-        if estacion_destino in estaciones:
-            subzona_destino = subzona
-
-    if subzona_inicio == subzona_destino:
-        # Mismo subzona, búsqueda interzonal
-        return busqueda_interzonal(estacion_inicio, estacion_destino)
-    else:
-        # Diferentes subzonas, conecta a través de BFS entre subzonas
-        ruta = busqueda_interzonal(estacion_inicio, estacion_destino)
-        if ruta:
-            return ruta
-        else:
-            # Si no hay ruta directa, buscar transbordos
-            # Aquí puedes implementar una búsqueda que intente conectar ambas subzonas vía estaciones de transbordo
-            for estacion in zonas[zona][subzona_inicio]:
-                for destino in zonas[zona][subzona_destino]:
-                    inter_ruta = busqueda_interzonal(estacion, destino)
-                    if inter_ruta:
-                        return [estacion_inicio] + inter_ruta + [estacion_destino]
-
-    return None  # Si no hay ruta
-
-
-def encontrar_subzona(zonas, estacion):
-    for zona, subzonas in zonas.items():
-        for subzona, estaciones in subzonas.items():
-            if estacion in estaciones:
-                return zona, subzona
-    return None, None
-
-
-def bfs_encontrar_ruta(metro, inicio, destino):
-    visitados = set()
-    cola = [(inicio, [inicio])]
-
-    while cola:
-        nodo_actual, ruta = cola.pop(0)
-
-        if nodo_actual == destino:
-            return ruta
-
-        for vecino in metro.get(nodo_actual, []):
-            if vecino not in visitados:
-                visitados.add(vecino)
-                cola.append((vecino, ruta + [vecino]))
-
-    return None
-
-
-def encontrar_ruta(zonas, metro, inicio, destino):
-    zona_inicio, subzona_inicio = encontrar_subzona(zonas, inicio)
-    zona_destino, subzona_destino = encontrar_subzona(zonas, destino)
-
-    if zona_inicio is None or zona_destino is None:
-        print("Una de las estaciones no existe en las zonas.")
+                    visitados.add(vecino)
+                    cola.append((vecino, ruta + [vecino]))
+        
         return None
 
-    # Si están en la misma subzona, realiza una búsqueda directa.
-    if zona_inicio == zona_destino and subzona_inicio == subzona_destino:
-        return bfs_encontrar_ruta(metro, inicio, destino)
+    def busqueda_entre_zonas(self, origen: str, destino: str) -> Optional[List[str]]:
+        """Búsqueda entre diferentes zonas"""
+        estacion_origen = self.gestor_estaciones.estaciones[origen]
+        estacion_destino = self.gestor_estaciones.estaciones[destino]
+        
+        transbordos_origen = self.gestor_estaciones.obtener_transbordos_zona(estacion_origen.zona)
+        transbordos_destino = self.gestor_estaciones.obtener_transbordos_zona(estacion_destino.zona)
+        
+        mejor_ruta = None
+        mejor_longitud = float('inf')
+        
+        for t_origen in transbordos_origen:
+            for t_destino in transbordos_destino:
+                ruta1 = self.busqueda_intrazonal(origen, t_origen)
+                if not ruta1:
+                    continue
+                
+                ruta2 = self.busqueda_intrazonal(t_origen, t_destino)
+                if not ruta2:
+                    continue
+                
+                ruta3 = self.busqueda_intrazonal(t_destino, destino)
+                if not ruta3:
+                    continue
+                
+                ruta_total = ruta1[:-1] + ruta2[:-1] + ruta3
+                if len(ruta_total) < mejor_longitud:
+                    mejor_ruta = ruta_total
+                    mejor_longitud = len(ruta_total)
+        
+        return mejor_ruta
 
-    # Si están en zonas o subzonas diferentes, busca transbordos.
-    ruta = []
+class GestorCasos:
+    """Gestiona el almacenamiento y recuperación de casos"""
+    def __init__(self):
+        self.memoria_casos: Dict[str, Caso] = {}
+        self.cargar_casos()
 
-    # Busca estaciones de transbordo en la subzona de inicio.
-    for estacion in zonas[zona_inicio][subzona_inicio]:
-        if "L" in estacion and estacion in metro:  # Transbordo probable
-            ruta_parcial = bfs_encontrar_ruta(metro, inicio, estacion)
-            if ruta_parcial:
-                ruta.extend(ruta_parcial)
-                break
+    def cargar_casos(self):
+        """Carga casos desde almacenamiento persistente"""
+        try:
+            with open('casos_metro.json', 'r') as f:
+                datos_casos = json.load(f)
+                for clave_caso, datos in datos_casos.items():
+                    # Convertir la fecha de string a datetime
+                    datos['fecha_creacion'] = datetime.fromisoformat(datos['fecha_creacion'])
+                    self.memoria_casos[clave_caso] = Caso(**datos)
+        except FileNotFoundError:
+            pass
 
-    # Agrega la estación de transbordo final en la subzona de destino.
-    for estacion in zonas[zona_destino][subzona_destino]:
-        if "L" in estacion and estacion in metro:  # Transbordo probable
-            ruta_parcial = bfs_encontrar_ruta(metro, ruta[-1], estacion)
-            if ruta_parcial:
-                ruta.extend(ruta_parcial[1:])
-                break
+    def guardar_casos(self):
+        """Guarda casos en almacenamiento persistente"""
+        datos_casos = {}
+        for k, v in self.memoria_casos.items():
+            # Crear un diccionario con los datos del caso
+            datos_caso = {
+                'origen': v.origen,
+                'destino': v.destino,
+                'ruta': v.ruta,
+                'transbordos': v.transbordos,
+                'fecha_creacion': v.fecha_creacion.isoformat(),  # Convertir datetime a string
+                'contador_uso': v.contador_uso,
+                'calificacion_promedio': v.calificacion_promedio,
+                'total_calificaciones': v.total_calificaciones
+            }
+            datos_casos[k] = datos_caso
+            
+        with open('casos_metro.json', 'w') as f:
+            json.dump(datos_casos, f, indent=2)
 
-    # Finalmente, conecta con la estación de destino.
-    ruta_final = bfs_encontrar_ruta(metro, ruta[-1], destino)
-    if ruta_final:
-        ruta.extend(ruta_final[1:])
+    def guardar_nuevo_caso(self, origen: str, destino: str, ruta: List[str], transbordos: List[Tuple[str, str, str]]):
+        """Almacena un nuevo caso en la memoria"""
+        caso = Caso(
+            origen=origen,
+            destino=destino,
+            ruta=ruta,
+            transbordos=transbordos,
+            fecha_creacion=datetime.now()
+        )
+        self.memoria_casos[f"{origen}-{destino}"] = caso
+        self.guardar_casos()
 
-    return ruta
+    def calificar_ruta(self, origen: str, destino: str, calificacion: int):
+        """Permite calificar rutas para mejorar la calidad de los casos"""
+        clave_caso = f"{origen}-{destino}"
+        if clave_caso in self.memoria_casos:
+            caso = self.memoria_casos[clave_caso]
+            caso.total_calificaciones += 1
+            caso.calificacion_promedio = (
+                (caso.calificacion_promedio * (caso.total_calificaciones - 1)) + calificacion
+            ) / caso.total_calificaciones
+            self.guardar_casos()
+
+class MetroRouterCDMX:
+    def __init__(self, metro_cdmx: dict, zonas: dict):
+        self.gestor_estaciones = GestorEstaciones(metro_cdmx, zonas)
+        self.gestor_rutas = GestorRutas(self.gestor_estaciones)
+        self.gestor_casos = GestorCasos()
+        self.metro_cdmx = metro_cdmx
+        
+        # Pesos para estrategias de razonamiento
+        self.peso_casos = 0.9
+        self.peso_modelo = 0.1
+
+    def _obtener_nombre_base(self, estacion: str) -> str:
+        """Obtiene el nombre base de la estación sin el número de línea"""
+        return estacion.split(' L')[0] if ' L' in estacion else estacion
+
+    def encontrar_ruta(self, origen: str, destino: str) -> Optional[RutaInfo]:
+        """Método principal que combina razonamiento basado en casos y modelos"""
+        # Primero intentar con casos
+        resultado_caso = self._buscar_ruta_por_casos(origen, destino)
+        if resultado_caso:
+            ruta, similitud, caso_base = resultado_caso
+            if self._evaluar_calidad_ruta(ruta) > 0:
+                return RutaInfo(
+                    ruta=ruta,
+                    metodo='casos',
+                    similitud=similitud,
+                    caso_base=caso_base,
+                    calidad=self._evaluar_calidad_ruta(ruta)
+                )
+        
+        # Si no hay caso adecuado, usar el modelo
+        ruta_modelo = self._buscar_ruta_por_modelo(origen, destino)
+        
+        # Almacenar la nueva ruta como caso si se encontró
+        if ruta_modelo:
+            transbordos = self._identificar_transbordos(ruta_modelo)
+            self.gestor_casos.guardar_nuevo_caso(origen, destino, ruta_modelo, transbordos)
+            return RutaInfo(
+                ruta=ruta_modelo,
+                metodo='modelo',
+                similitud=0.0,
+                caso_base=None,
+                calidad=self._evaluar_calidad_ruta(ruta_modelo)
+            )
+        
+        return None
+
+    def _buscar_ruta_por_casos(self, origen: str, destino: str) -> Optional[Tuple[List[str], float, str]]:
+        """Búsqueda usando razonamiento basado en casos"""
+        # 1. Búsqueda de caso exacto
+        caso_exacto = self._buscar_caso_exacto(origen, destino)
+        if caso_exacto:
+            if caso_exacto.calificacion_promedio >= 4.0:
+                caso_exacto.contador_uso += 1
+                return caso_exacto.ruta, 1.0, f"{origen}-{destino}"
+            elif caso_exacto.calificacion_promedio < 2.0:
+                return None
+
+        # 2. Búsqueda de casos similares
+        casos_similares = self._buscar_casos_similares(origen, destino)
+        if casos_similares:
+            # Intentar adaptar el mejor caso similar
+            for similitud, caso in casos_similares:
+                ruta_adaptada = self._adaptar_caso(caso, origen, destino)
+                if ruta_adaptada:
+                    return ruta_adaptada, similitud, f"{caso.origen}-{caso.destino}"
+
+        return None
+
+    def _buscar_caso_exacto(self, origen: str, destino: str) -> Optional[Caso]:
+        """Busca un caso que coincida exactamente con origen y destino"""
+        clave_caso = f"{origen}-{destino}"
+        return self.gestor_casos.memoria_casos.get(clave_caso)
+
+    def _buscar_casos_similares(self, origen: str, destino: str) -> List[Tuple[float, Caso]]:
+        """Busca y ordena casos similares por nivel de similitud"""
+        casos_similares = []
+        
+        linea_origen = origen.split(' L')[1] if ' L' in origen else None
+        linea_destino = destino.split(' L')[1] if ' L' in destino else None
+        
+        zona_origen = self.gestor_estaciones.encontrar_subzona(self._obtener_nombre_base(origen))[0]
+        zona_destino = self.gestor_estaciones.encontrar_subzona(self._obtener_nombre_base(destino))[0]
+
+        for caso in self.gestor_casos.memoria_casos.values():
+            similitud = self._calcular_similitud(
+                caso, origen, destino,
+                linea_origen, linea_destino,
+                zona_origen, zona_destino
+            )
+            
+            if similitud >= 0.6:  # Umbral de similitud
+                casos_similares.append((similitud, caso))
+        
+        return sorted(casos_similares, key=lambda x: x[0], reverse=True)
+
+    def _calcular_similitud(self, caso: Caso, origen: str, destino: str,
+                          linea_origen: str, linea_destino: str,
+                          zona_origen: str, zona_destino: str) -> float:
+        """Calcula el nivel de similitud entre un caso y una nueva situación"""
+        similitud = 0.0
+        
+        # 1. Similitud de líneas (40% del peso)
+        caso_linea_origen = caso.origen.split(' L')[1] if ' L' in caso.origen else None
+        caso_linea_destino = caso.destino.split(' L')[1] if ' L' in caso.destino else None
+        
+        if linea_origen == caso_linea_origen:
+            similitud += 0.2
+        if linea_destino == caso_linea_destino:
+            similitud += 0.2
+            
+        # 2. Similitud de zonas (30% del peso)
+        caso_zona_origen = self.gestor_estaciones.encontrar_subzona(
+            self._obtener_nombre_base(caso.origen))[0]
+        caso_zona_destino = self.gestor_estaciones.encontrar_subzona(
+            self._obtener_nombre_base(caso.destino))[0]
+            
+        if zona_origen == caso_zona_origen:
+            similitud += 0.15
+        if zona_destino == caso_zona_destino:
+            similitud += 0.15
+            
+        # 3. Calificación del caso (20% del peso)
+        if caso.total_calificaciones > 0:
+            similitud += min(0.2, (caso.calificacion_promedio / 5.0) * 0.2)
+        
+        # 4. Frecuencia de uso (10% del peso)
+        similitud += min(0.1, (caso.contador_uso / 100) * 0.1)
+        
+        return similitud
+
+    def _adaptar_caso(self, caso: Caso, nuevo_origen: str, nuevo_destino: str) -> Optional[List[str]]:
+        """
+        Adapta un caso similar para resolver el nuevo problema.
+        Puede incluir extender la ruta, acortarla o modificar transbordos.
+        """
+        ruta_adaptada = []
+        
+        # Si el origen es diferente, encontrar conexión al caso original
+        if nuevo_origen != caso.origen:
+            ruta_inicio = self._buscar_ruta_por_modelo(nuevo_origen, caso.ruta[0])
+            if ruta_inicio:
+                ruta_adaptada.extend(ruta_inicio[:-1])
+        
+        # Agregar la ruta del caso
+        ruta_adaptada.extend(caso.ruta)
+        
+        # Si el destino es diferente, encontrar conexión desde el caso
+        if nuevo_destino != caso.destino:
+            ruta_fin = self._buscar_ruta_por_modelo(caso.ruta[-1], nuevo_destino)
+            if ruta_fin:
+                ruta_adaptada.extend(ruta_fin[1:])
+        
+        # Verificar si la ruta adaptada es válida
+        if ruta_adaptada:
+            # Evaluar calidad de la adaptación
+            calidad = self._evaluar_calidad_ruta(ruta_adaptada)
+            if calidad >= 0.7:  # Umbral de calidad para adaptaciones
+                return ruta_adaptada
+        
+        return None
+
+    def _buscar_ruta_por_modelo(self, origen: str, destino: str) -> Optional[List[str]]:
+        """Búsqueda usando el modelo jerárquico"""
+        return self.bfs_encontrar_ruta(self.metro_cdmx, origen, destino)
+
+    def bfs_encontrar_ruta(self, metro, inicio, destino):
+        """Implementación de BFS para encontrar ruta"""
+        visitados = set()
+        cola = [(inicio, [inicio])]
+
+        while cola:
+            nodo_actual, ruta = cola.pop(0)
+
+            if nodo_actual == destino:
+                return ruta
+
+            for vecino in metro.get(nodo_actual, []):
+                if vecino not in visitados:
+                    visitados.add(vecino)
+                    cola.append((vecino, ruta + [vecino]))
+
+        return None
+
+    def _identificar_transbordos(self, ruta: List[str]) -> List[Tuple[str, str, str]]:
+        """Identifica los puntos de transbordo en una ruta"""
+        transbordos = []
+        linea_actual = None
+        
+        for i in range(len(ruta) - 1):
+            estacion = ruta[i]
+            siguiente = ruta[i + 1]
+            
+            # Obtener la línea de cada estación
+            linea_actual_str = estacion.split(' L')[-1] if ' L' in estacion else None
+            linea_siguiente_str = siguiente.split(' L')[-1] if ' L' in siguiente else None
+            
+            if linea_actual_str and linea_siguiente_str and linea_actual_str != linea_siguiente_str:
+                transbordos.append((estacion, f"L{linea_actual_str}", f"L{linea_siguiente_str}"))
+        
+        return transbordos
+
+    def _evaluar_calidad_ruta(self, ruta: List[str]) -> float:
+        """Evalúa la calidad general de una ruta"""
+        if not ruta:
+            return 0.0
+        
+        # Penalización por número de transbordos (max 1.0)
+        transbordos = len(self._identificar_transbordos(ruta))
+        penalizacion_transbordos = max(0, 1 - (transbordos * 0.2))
+        
+        # Penalización por longitud de la ruta (max 1.0)
+        penalizacion_longitud = max(0, 1 - (len(ruta) * 0.05))
+        
+        # Eficiencia de los transbordos (max 1.0)
+        transbordos_principales = sum(
+            1 for estacion in ruta 
+            if ' L' in estacion
+        )
+        eficiencia_transbordos = min(1, transbordos_principales * 0.2)
+        
+        # Ponderación de factores
+        return (
+            penalizacion_transbordos * 0.4 +  # 40% peso
+            penalizacion_longitud * 0.4 +     # 40% peso
+            eficiencia_transbordos * 0.2      # 20% peso
+        )
+
+    def obtener_estadisticas_ruta(self, ruta: List[str]) -> dict:
+        """Genera estadísticas detalladas de una ruta"""
+        if not ruta:
+            return {}
+
+        transbordos = self._identificar_transbordos(ruta)
+        return {
+            'num_estaciones': len(ruta),
+            'num_transbordos': len(transbordos),
+            'tiempo_estimado': len(ruta) * 3 + len(transbordos) * 5,  # 3 min/estación + 5 min/transbordo
+            'transbordos': transbordos,
+            'calidad_ruta': self._evaluar_calidad_ruta(ruta)
+        }
+    
 
 
-# Ejemplo de uso:
-print(encontrar_ruta(zonas, metro_cdmx, "Eugenia L3", "Centro_Medico L9"))
+def main():
+    router = MetroRouterCDMX(metro_cdmx, zonas)
+    
+    def mostrar_menu_principal():
+        print("\n=== Sistema de Rutas del Metro CDMX ===")
+        print("1. Buscar ruta")
+        print("2. Ver estaciones por línea")
+        print("3. Calificar una ruta")
+        print("4. Ver estadísticas de casos")
+        print("5. Ver estadísticas del sistema")
+        print("6. Salir")
+    
+    def mostrar_detalles_ruta(resultado: RutaInfo, origen: str, destino: str):
+        print(f"\nRuta encontrada de {origen} a {destino}:")
+        print(f"Estaciones: {' -> '.join(resultado.ruta)}")
+        
+        # Información sobre el método de razonamiento
+        print(f"\nMétodo de razonamiento: {resultado.metodo.upper()}")
+        if resultado.metodo == 'casos':
+            print(f"Similitud con caso base: {resultado.similitud:.2%}")
+            print(f"Caso base utilizado: {resultado.caso_base}")
+        print(f"Calidad de la ruta: {resultado.calidad:.2%}")
+        
+        # Obtener estadísticas detalladas
+        stats = router.obtener_estadisticas_ruta(resultado.ruta)
+        print(f"\nEstadísticas de la ruta:")
+        print(f"Tiempo estimado: {stats['tiempo_estimado']} minutos")
+        print(f"Número de estaciones: {stats['num_estaciones']}")
+        print(f"Número de transbordos: {stats['num_transbordos']}")
+        
+        if stats['transbordos']:
+            print("\nTransbordos:")
+            for estacion, de_linea, a_linea in stats['transbordos']:
+                print(f"  - En {estacion}: cambiar de línea {de_linea} a línea {a_linea}")
+        
+        # Información del caso si existe
+        clave_caso = f"{origen}-{destino}"
+        if clave_caso in router.gestor_casos.memoria_casos:
+            caso = router.gestor_casos.memoria_casos[clave_caso]
+            print(f"\nHistorial de la ruta:")
+            print(f"Veces utilizada: {caso.contador_uso}")
+            if caso.total_calificaciones > 0:
+                print(f"Calificación promedio: {caso.calificacion_promedio:.1f}/5.0")
+                print(f"Total de calificaciones: {caso.total_calificaciones}")
+        else:
+            print("\nEsta es una nueva ruta generada por el sistema")
+
+    def procesar_busqueda_ruta():
+        print("\nEstaciones disponibles:")
+        print_stations_by_line()
+        
+        print("\nIngrese la estación de origen (ejemplo: 'Universidad L3' o 'Pantitlan L1')")
+        origen = input("Origen: ").strip()
+        
+        print("\nIngrese la estación de destino (ejemplo: 'Universidad L3' o 'Pantitlan L1')")
+        destino = input("Destino: ").strip()
+        
+        try:
+            resultado = router.encontrar_ruta(origen, destino)
+            if resultado:
+                mostrar_detalles_ruta(resultado, origen, destino)
+            else:
+                print(f"\nNo se encontró ruta entre {origen} y {destino}")
+                
+        except KeyError as e:
+            print(f"\nError: Estación no encontrada: {e}")
+        except Exception as e:
+            print(f"\nError al buscar la ruta: {e}")
+
+    def procesar_calificacion_ruta():
+        try:
+            print("\nCalificar una ruta utilizada:")
+            origen = input("Ingrese la estación de origen: ").strip()
+            destino = input("Ingrese la estación de destino: ").strip()
+            
+            clave_caso = f"{origen}-{destino}"
+            if clave_caso in router.gestor_casos.memoria_casos:
+                caso = router.gestor_casos.memoria_casos[clave_caso]
+                print(f"\nInformación actual de la ruta:")
+                print(f"Calificación promedio: {caso.calificacion_promedio:.1f}/5.0")
+                print(f"Total de calificaciones: {caso.total_calificaciones}")
+                
+                try:
+                    calificacion = int(input("\nCalifique la ruta (1-5): ").strip())
+                    if 1 <= calificacion <= 5:
+                        router.gestor_casos.calificar_ruta(origen, destino, calificacion)
+                        print("\n¡Gracias por su calificación!")
+                        # Mostrar nueva calificación promedio
+                        caso = router.gestor_casos.memoria_casos[clave_caso]
+                        print(f"Nueva calificación promedio: {caso.calificacion_promedio:.1f}/5.0")
+                    else:
+                        print("\nError: La calificación debe estar entre 1 y 5")
+                except ValueError:
+                    print("\nError: Por favor ingrese un número válido")
+            else:
+                print("\nNo se encontró un caso guardado para esta ruta")
+        except Exception as e:
+            print(f"\nError al calificar la ruta: {e}")
+
+    def mostrar_estadisticas_casos():
+        try:
+            print("\nEstadísticas de casos almacenados:")
+            if router.gestor_casos.memoria_casos:
+                total_casos = len(router.gestor_casos.memoria_casos)
+                casos_usados = sum(1 for caso in router.gestor_casos.memoria_casos.values() 
+                                 if caso.contador_uso > 0)
+                casos_calificados = sum(1 for caso in router.gestor_casos.memoria_casos.values()
+                                      if caso.total_calificaciones > 0)
+                
+                print(f"\nResumen general:")
+                print(f"Total de casos almacenados: {total_casos}")
+                print(f"Casos utilizados: {casos_usados} ({(casos_usados/total_casos)*100:.1f}%)")
+                print(f"Casos calificados: {casos_calificados} ({(casos_calificados/total_casos)*100:.1f}%)")
+                
+                # Casos más utilizados
+                casos_ordenados = sorted(
+                    router.gestor_casos.memoria_casos.values(),
+                    key=lambda x: x.contador_uso,
+                    reverse=True
+                )[:5]
+                
+                if casos_ordenados:
+                    print("\nRutas más utilizadas:")
+                    for i, caso in enumerate(casos_ordenados, 1):
+                        print(f"\n{i}. {caso.origen} → {caso.destino}")
+                        print(f"   Usos: {caso.contador_uso}")
+                        if caso.total_calificaciones > 0:
+                            print(f"   Calificación: {caso.calificacion_promedio:.1f}/5.0")
+                            print(f"   Total calificaciones: {caso.total_calificaciones}")
+                
+                # Casos mejor calificados
+                casos_calificados = [caso for caso in router.gestor_casos.memoria_casos.values()
+                                   if caso.total_calificaciones > 0]
+                if casos_calificados:
+                    mejor_calificados = sorted(
+                        casos_calificados,
+                        key=lambda x: x.calificacion_promedio,
+                        reverse=True
+                    )[:5]
+                    
+                    print("\nRutas mejor calificadas:")
+                    for i, caso in enumerate(mejor_calificados, 1):
+                        print(f"\n{i}. {caso.origen} → {caso.destino}")
+                        print(f"   Calificación: {caso.calificacion_promedio:.1f}/5.0")
+                        print(f"   Total calificaciones: {caso.total_calificaciones}")
+                        print(f"   Usos: {caso.contador_uso}")
+            else:
+                print("No hay casos almacenados todavía")
+        except Exception as e:
+            print(f"\nError al mostrar estadísticas: {e}")
+
+    def mostrar_estadisticas_sistema():
+        try:
+            print("\n=== Estadísticas del Sistema ===")
+            
+            # Estadísticas de líneas
+            print("\nEstadísticas por línea:")
+            lineas = defaultdict(int)
+            for estacion in metro_cdmx.keys():
+                if ' L' in estacion:
+                    linea = 'L' + estacion.split(' L')[1]
+                    lineas[linea] += 1
+            
+            for linea, num_estaciones in sorted(lineas.items()):
+                print(f"{linea}: {num_estaciones} estaciones")
+            
+            # Estadísticas de transbordos
+            estaciones_transbordo = sum(1 for estacion in metro_cdmx.keys()
+                                      if len(metro_cdmx[estacion]) > 2)
+            print(f"\nEstaciones de transbordo: {estaciones_transbordo}")
+            
+            # Estadísticas de zonas
+            print("\nEstadísticas por zona:")
+            for zona, subzonas in zonas.items():
+                total_estaciones = sum(len(estaciones) for estaciones in subzonas.values())
+                print(f"{zona}: {total_estaciones} estaciones")
+                print(f"  Subzonas: {len(subzonas)}")
+        
+        except Exception as e:
+            print(f"\nError al mostrar estadísticas del sistema: {e}")
+
+    # Bucle principal
+    while True:
+        mostrar_menu_principal()
+        opcion = input("\nSeleccione una opción (1-6): ")
+        
+        if opcion == "1":
+            procesar_busqueda_ruta()
+        elif opcion == "2":
+            print_stations_by_line()
+        elif opcion == "3":
+            procesar_calificacion_ruta()
+        elif opcion == "4":
+            mostrar_estadisticas_casos()
+        elif opcion == "5":
+            mostrar_estadisticas_sistema()
+        elif opcion == "6":
+            print("\n¡Gracias por usar el Sistema de Rutas del Metro CDMX!")
+            break
+        else:
+            print("\nOpción no válida. Por favor, seleccione una opción del 1 al 6.")
+
+if __name__ == "__main__":
+    main()

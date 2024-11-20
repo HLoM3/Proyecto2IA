@@ -1,0 +1,171 @@
+{
+  "Universidad L3-Pantitlan L1": {
+    "origen": "Universidad L3",
+    "destino": "Pantitlan L1",
+    "ruta": [
+      "Universidad L3",
+      "Copilco L3",
+      "Miguel_Angel_de_Quevedo",
+      "Viveros L3",
+      "Coyoacan L3",
+      "Zapata L3",
+      "Division_del_Norte L3",
+      "Eugenia L3",
+      "Etiopia L3",
+      "Centro_Medico L3",
+      "Hospital_General L3",
+      "Ninos_heroes L3",
+      "Balderas L3",
+      "Balderas L1",
+      "Salto_del_Agua L1",
+      "Isabel_la_Catolica L1",
+      "Pino_Suarez L1",
+      "Merced L1",
+      "Candelaria L1",
+      "San_Lazaro L1",
+      "Moctezuma L1",
+      "Balbuena L1",
+      "Boulevard_Puerto_Aereo L1",
+      "Gomez_Farias L1",
+      "Zaragoza L1",
+      "Pantitlan L1"
+    ],
+    "transbordos": [
+      [
+        "Balderas L3",
+        "L3",
+        "L1"
+      ]
+    ],
+    "fecha_creacion": "2024-11-19T23:58:21.178927",
+    "contador_uso": 0,
+    "calificacion_promedio": 0.0,
+    "total_calificaciones": 0
+  },
+  "Universidad L3-Candelaria L1": {
+    "origen": "Universidad L3",
+    "destino": "Candelaria L1",
+    "ruta": [
+      "Universidad L3",
+      "Copilco L3",
+      "Miguel_Angel_de_Quevedo",
+      "Viveros L3",
+      "Coyoacan L3",
+      "Zapata L3",
+      "Division_del_Norte L3",
+      "Eugenia L3",
+      "Etiopia L3",
+      "Centro_Medico L3",
+      "Hospital_General L3",
+      "Ninos_heroes L3",
+      "Balderas L3",
+      "Balderas L1",
+      "Salto_del_Agua L1",
+      "Isabel_la_Catolica L1",
+      "Pino_Suarez L1",
+      "Merced L1",
+      "Candelaria L1"
+    ],
+    "transbordos": [
+      [
+        "Balderas L3",
+        "L3",
+        "L1"
+      ]
+    ],
+    "fecha_creacion": "2024-11-19T23:55:33.792348",
+    "contador_uso": 0,
+    "calificacion_promedio": 0.0,
+    "total_calificaciones": 0
+  },
+  "Copilco L3-Candelaria L1": {
+    "origen": "Copilco L3",
+    "destino": "Candelaria L1",
+    "ruta": [
+      "Copilco L3",
+      "Miguel_Angel_de_Quevedo",
+      "Viveros L3",
+      "Coyoacan L3",
+      "Zapata L3",
+      "Division_del_Norte L3",
+      "Eugenia L3",
+      "Etiopia L3",
+      "Centro_Medico L3",
+      "Hospital_General L3",
+      "Ninos_heroes L3",
+      "Balderas L3",
+      "Balderas L1",
+      "Salto_del_Agua L1",
+      "Isabel_la_Catolica L1",
+      "Pino_Suarez L1",
+      "Merced L1",
+      "Candelaria L1"
+    ],
+    "transbordos": [
+      [
+        "Balderas L3",
+        "L3",
+        "L1"
+      ]
+    ],
+    "fecha_creacion": "2024-11-19T23:56:00.796454",
+    "contador_uso": 0,
+    "calificacion_promedio": 0.0,
+    "total_calificaciones": 0
+  },
+  "Universidad L3-Coyoacan L3": {
+    "origen": "Universidad L3",
+    "destino": "Coyoacan L3",
+    "ruta": [
+      "Universidad L3",
+      "Copilco L3",
+      "Miguel_Angel_de_Quevedo",
+      "Viveros L3",
+      "Coyoacan L3"
+    ],
+    "transbordos": [],
+    "fecha_creacion": "2024-11-19T23:57:19.557408",
+    "contador_uso": 0,
+    "calificacion_promedio": 0.0,
+    "total_calificaciones": 0
+  },
+  "Universidad L3-Balbuena L1": {
+    "origen": "Universidad L3",
+    "destino": "Balbuena L1",
+    "ruta": [
+      "Universidad L3",
+      "Copilco L3",
+      "Miguel_Angel_de_Quevedo",
+      "Viveros L3",
+      "Coyoacan L3",
+      "Zapata L3",
+      "Division_del_Norte L3",
+      "Eugenia L3",
+      "Etiopia L3",
+      "Centro_Medico L3",
+      "Hospital_General L3",
+      "Ninos_heroes L3",
+      "Balderas L3",
+      "Balderas L1",
+      "Salto_del_Agua L1",
+      "Isabel_la_Catolica L1",
+      "Pino_Suarez L1",
+      "Merced L1",
+      "Candelaria L1",
+      "San_Lazaro L1",
+      "Moctezuma L1",
+      "Balbuena L1"
+    ],
+    "transbordos": [
+      [
+        "Balderas L3",
+        "L3",
+        "L1"
+      ]
+    ],
+    "fecha_creacion": "2024-11-20T00:00:31.567836",
+    "contador_uso": 0,
+    "calificacion_promedio": 0.0,
+    "total_calificaciones": 0
+  }
+}
